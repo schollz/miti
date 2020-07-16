@@ -1,43 +1,69 @@
 package sequencer
 
 import (
+	"math"
 	"time"
 
 	log "github.com/schollz/logger"
 )
 
+const PULSES_PER_QUARTER_NOTE = 24.0
+
 type Sequencer struct {
-	Tempo           int
-	metronome_tempo chan bool
-	metronome_stop  chan bool
-	metronome_on    bool
+	metronome *Metronome
+}
+
+type Metronome struct {
+	quarterNotePerMeasure         float64
+	tempo                         int
+	pulse, beat, measure, section float64
+	sections                      []float64
+	update                        chan bool
+	stop                          chan bool
+	on                            bool
 }
 
 func New() (s *Sequencer) {
 	s = new(Sequencer)
-	s.Tempo = 60
-	s.metronome_stop = make(chan bool)
-	s.metronome_tempo = make(chan bool)
+	s.metronome = new(Metronome)
+	s.metronome.tempo = 60
+	s.metronome.quarterNotePerMeasure = 4
+	s.metronome.sections = []float64{4}
+	s.metronome.update = make(chan bool)
+	s.metronome.stop = make(chan bool)
 	return
 }
 
 func (s *Sequencer) Start() {
+	s.metronome.Start()
+}
+
+func (s *Sequencer) Stop() {
+	s.metronome.Stop()
+}
+
+func (s *Metronome) Stop() {
+	s.stop <- true
+}
+
+func (s *Metronome) Start() {
 	if s.metronome_on {
 		log.Debug("metronome already running")
 		return
 	}
 	s.metronome_on = true
 	go func() {
-		ticker := time.NewTicker(time.Duration(1000*60/s.Tempo) * time.Millisecond)
+		ticker := time.NewTicker(time.Duration(1000*60/s.tempo) * time.Millisecond)
 
 		for {
 			select {
 			case <-ticker.C:
 				log.Trace("tick")
-			case <-s.metronome_tempo:
+				go s.metronome.step()
+			case <-s.update:
 				ticker.Stop()
-				ticker = time.NewTicker(time.Duration(1000*60/s.Tempo) * time.Millisecond)
-			case <-s.metronome_stop:
+				ticker = time.NewTicker(time.Duration(1000*60/s.tempo) * time.Millisecond)
+			case <-s.stop:
 				ticker.Stop()
 				log.Debug("..ticker stopped!")
 				s.metronome_on = false
@@ -48,14 +74,28 @@ func (s *Sequencer) Start() {
 	return
 }
 
-func (s *Sequencer) Stop() {
-	s.metronome_stop <- true
+func (s *Metronome) step() {
+	s.pulse++
+	if s.pulse == PULSES_PER_QUARTER_NOTE {
+		s.pulse = 0
+		s.beat++
+		if s.beat == s.quarterNotePerMeasure {
+			s.beat = 0
+			s.measure++
+		}
+		if s.measure == s.sections[s.section] {
+			s.section++
+			s.section = math.Mod(s.section, float64(len(s.sections)))
+			s.measure = 0
+		}
+		log.Tracef("%2.0f %2.0f %2.0f", s.section, s.measure, s.beat)
+	}
 }
 
-func (s *Sequencer) UpdateTempo(tempo int) {
+func (s *Metronome) UpdateTempo(tempo int) {
 	if tempo <= 0 {
 		return
 	}
-	s.Tempo = tempo
-	s.metronome_tempo <- true
+	s.tempo = tempo
+	s.update <- true
 }
