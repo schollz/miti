@@ -7,9 +7,10 @@ import (
 	"strings"
 )
 
-type Notes struct {
+type Chord struct {
 	Notes []Note
 	On    bool
+	Rest  bool
 }
 
 type Note struct {
