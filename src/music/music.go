@@ -10,14 +10,12 @@ import (
 type Chord struct {
 	Notes []Note
 	On    bool
-	Rest  bool
 }
 
 type Note struct {
-	Name     string
-	MIDI     int
-	Octave   int
-	Velocity int
+	Name   string
+	MIDI   int
+	Octave int
 }
 
 func NewNote(name string, octave int) Note {

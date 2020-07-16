@@ -9,6 +9,7 @@ import (
 )
 
 const PULSES_PER_QUARTER_NOTE = 24.0
+const QUARTERNOTES_PER_MEASURE = 4.0
 
 type Sequencer struct {
 	metronome *metronome.Metronome
@@ -26,6 +27,7 @@ type Part struct {
 }
 
 type Measure struct {
+	Emit   map[int][]music.Chord
 	Chords []music.Chord
 }
 
@@ -77,9 +79,9 @@ func Parse(s string) (sections []Section, err error) {
 			line = strings.TrimPrefix(line, "instrument")
 			part = Part{Instruments: strings.Split(line, ",")}
 		} else if len(line) > 0 {
-			measure := Measure{}
+			measure := Measure{Emit: make(map[int][]music.Chord)}
 			fs := strings.Fields(line)
-			for _, cluster := range fs {
+			for i, cluster := range fs {
 				if cluster == "." {
 					continue
 				}
@@ -96,6 +98,18 @@ func Parse(s string) (sections []Section, err error) {
 					return
 				}
 				measure.Chords = append(measure.Chords, music.Chord{Notes: notes})
+				startPulse := float64(i) / float64(len(fs)) * (QUARTERNOTES_PER_MEASURE*PULSES_PER_QUARTER_NOTE - 1)
+				endPulse := startPulse + 1/float64(len(fs))*(QUARTERNOTES_PER_MEASURE*PULSES_PER_QUARTER_NOTE-1)
+				// TODO: add in legato
+				if _, ok := measure.Emit[int(startPulse)]; !ok {
+					measure.Emit[int(startPulse)] = []music.Chord{}
+				}
+				measure.Emit[int(startPulse)] = append(measure.Emit[int(startPulse)], music.Chord{Notes: notes, On: true})
+				if _, ok := measure.Emit[int(endPulse)]; !ok {
+					measure.Emit[int(endPulse)] = []music.Chord{}
+				}
+				measure.Emit[int(endPulse)] = append(measure.Emit[int(endPulse)], music.Chord{Notes: notes, On: false})
+
 			}
 			part.Measures = append(part.Measures, measure)
 		}
