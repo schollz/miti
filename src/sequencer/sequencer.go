@@ -49,8 +49,8 @@ func (s *Sequencer) UpdateTempo(tempo int) {
 	s.metronome.UpdateTempo(tempo)
 }
 
-func (s *Sequencer) Emit(section int, measure int, beat int) {
-	log.Trace(section, measure, beat)
+func (s *Sequencer) Emit(section int, measure int, beat int, pulse int) {
+	log.Trace(section, measure, beat, beat*int(PULSES_PER_QUARTER_NOTE)+pulse)
 }
 
 func Parse(s string) (sections []Section, err error) {

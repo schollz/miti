@@ -17,10 +17,10 @@ type Metronome struct {
 	update                        chan bool
 	stop                          chan bool
 	on                            bool
-	stepemit                      func(int, int, int)
+	stepemit                      func(int, int, int, int)
 }
 
-func New(stepemit func(int, int, int)) (m *Metronome) {
+func New(stepemit func(int, int, int, int)) (m *Metronome) {
 	m = new(Metronome)
 	m.tempo = 60
 	m.quarterNotePerMeasure = 4
@@ -73,8 +73,8 @@ func (m *Metronome) Step() {
 			m.measure = 0
 		}
 		log.Trace(m.section, m.measure, m.beat)
-		m.stepemit(int(m.section), int(m.measure), int(m.beat))
 	}
+	m.stepemit(int(m.section), int(m.measure), int(m.beat), int(m.pulse))
 }
 
 func (m *Metronome) Stop() {
