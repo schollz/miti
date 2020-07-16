@@ -7,11 +7,31 @@ import (
 	"strings"
 )
 
+type Notes struct {
+	Notes []Note
+	On    bool
+}
+
 type Note struct {
 	Name     string
 	MIDI     int
 	Octave   int
 	Velocity int
+}
+
+func NewNote(name string, octave int) Note {
+	return Note{
+		Name:   name,
+		Octave: octave,
+		MIDI:   NoteToMidi(name, octave),
+	}
+}
+
+func NoteToMidi(note string, octave int) int {
+	if _, ok := allowedNotes[note]; !ok {
+		return -1
+	}
+	return allowedNotes[note] + 12*octave
 }
 
 func ParseCluster(cluster string, lastNote0 ...Note) (ns []Note, err error) {
@@ -101,21 +121,6 @@ func closestNote(name string, n Note) (n2 Note) {
 		}
 	}
 	return
-}
-
-func NewNote(name string, octave int) Note {
-	return Note{
-		Name:   name,
-		Octave: octave,
-		MIDI:   NoteToMidi(name, octave),
-	}
-}
-
-func NoteToMidi(note string, octave int) int {
-	if _, ok := allowedNotes[note]; !ok {
-		return -1
-	}
-	return allowedNotes[note] + 12*octave
 }
 
 var allowedNotes = map[string]int{
