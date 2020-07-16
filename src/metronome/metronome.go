@@ -72,7 +72,7 @@ func (m *Metronome) Step() {
 			m.section = math.Mod(m.section, float64(len(m.sections)))
 			m.measure = 0
 		}
-		log.Tracef("%2.0f %2.0f %2.0f", m.section, m.measure, m.beat)
+		log.Trace(m.section, m.measure, m.beat)
 		m.stepemit(int(m.section), int(m.measure), int(m.beat))
 	}
 }
