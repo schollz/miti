@@ -30,5 +30,5 @@ func (s *Sequencer) UpdateTempo(tempo int) {
 }
 
 func (s *Sequencer) Emit(section int, measure int, beat int) {
-	log.Debug(section, measure, beat)
+	log.Trace(section, measure, beat)
 }

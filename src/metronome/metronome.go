@@ -38,16 +38,15 @@ func (m *Metronome) Start() {
 	}
 	m.on = true
 	go func() {
-		ticker := time.NewTicker(time.Duration(1000*60/m.tempo) * time.Millisecond)
+		ticker := time.NewTicker(time.Duration(1000000*60/m.tempo/PULSES_PER_QUARTER_NOTE) * time.Microsecond)
 
 		for {
 			select {
 			case <-ticker.C:
-				log.Trace("tick")
 				go m.Step()
 			case <-m.update:
 				ticker.Stop()
-				ticker = time.NewTicker(time.Duration(1000*60/m.tempo) * time.Millisecond)
+				ticker = time.NewTicker(time.Duration(1000000*60/m.tempo/PULSES_PER_QUARTER_NOTE) * time.Microsecond)
 			case <-m.stop:
 				ticker.Stop()
 				log.Debug("..ticker stopped!")
