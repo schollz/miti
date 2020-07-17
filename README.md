@@ -57,6 +57,7 @@ The `pattern a` designates the pattern name, "a". This pattern has a single inst
 
 Each line under `instruments` designates a different measure. This is where you put notes. Notes without spaces are considered a chord and will be played simultaneously. The first measure plays C, E, and G (C major) and the second measure plays F, A and C (F major). This pattern will repeat indefinetly when played.
 
+To add more patterns, simply add a line with `pattern X` and again add `instruments` and their notes. The patterns will be played in order.
 
 #### Add instruments and subdivisions
 
@@ -83,9 +84,10 @@ instruments <instrument1>
 . FAC . . . FAC . . 
 ```
 
-By default, the chords will be composed of the nearest cluster of notes. If you want to specify the exact note you can add a suffix to include the octave. For example, `CEG` could instead be `C3E4G5` which will span the chord over three octaves.
+#### Specific notes
 
-To add more patterns, simply add a line with `pattern X` and again add `instruments` and their notes. The patterns will be played in order.
+By default, the note played will be the note closest to the previous. If you want to specify the exact note you can add a suffix to include the octave. For example, instead of writing `CEG` you could instead write `C3E4G5` which will span the chord over three octaves.
+
 
 ## To Do
 
