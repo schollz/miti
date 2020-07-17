@@ -62,8 +62,9 @@ func Init() (devices []string, err error) {
 					lenChordNotes := 0
 					for i, n := range chord.Notes {
 						midis[i] = int64(n.MIDI)
-						if alreadyOn, ok := notesOn[midis[i]]; ok {
-							if alreadyOn {
+						if onState, ok := notesOn[midis[i]]; ok {
+							if onState && chord.On {
+								// this note already has this state
 								continue
 							}
 						}
