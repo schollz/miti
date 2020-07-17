@@ -4,8 +4,7 @@ import (
 	"flag"
 
 	log "github.com/schollz/logger"
-	"github.com/schollz/midi-sequencer/src/midi"
-	"github.com/schollz/midi-sequencer/src/server"
+	"github.com/schollz/saps/src/play"
 )
 
 var flagDebug, flagTrace bool
@@ -24,8 +23,8 @@ func main() {
 	} else {
 		log.SetLevel("info")
 	}
-	midi.Init()
-	err := server.Run()
+
+	err := play.Play()
 	if err != nil {
 		log.Error(err)
 	}

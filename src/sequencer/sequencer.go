@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	log "github.com/schollz/logger"
-	"github.com/schollz/midi-sequencer/src/metronome"
-	"github.com/schollz/midi-sequencer/src/music"
+	"github.com/schollz/saps/src/metronome"
+	"github.com/schollz/saps/src/music"
 )
 
 const QUARTERNOTES_PER_MEASURE = 4
@@ -15,6 +15,7 @@ type Sequencer struct {
 	Sections  []Section
 
 	measure, section int
+	midiPlay         func(string, music.Chord)
 }
 
 type Section struct {
@@ -36,9 +37,10 @@ type Measure struct {
 	Chords []music.Chord
 }
 
-func New() (s *Sequencer) {
+func New(midiPlay func(string, music.Chord)) (s *Sequencer) {
 	s = new(Sequencer)
 	s.metronome = metronome.New(s.Emit)
+	s.midiPlay = midiPlay
 	return
 }
 
@@ -76,6 +78,19 @@ func (s *Sequencer) Emit(pulse int) {
 		if e, ok := measure.Emit[pulse]; ok {
 			// emit
 			log.Tracef("[%s] emit %+v", strings.Join(part.Instruments, ", "), e)
+			for _, instrument := range part.Instruments {
+				chordOff := music.Chord{On: false}
+				chordOn := music.Chord{On: true}
+				for _, chord := range e {
+					if chord.On {
+						chordOn.Notes = append(chordOn.Notes, chord.Notes...)
+					} else {
+						chordOff.Notes = append(chordOff.Notes, chord.Notes...)
+					}
+				}
+				s.midiPlay(instrument, chordOff)
+				s.midiPlay(instrument, chordOn)
+			}
 		}
 	}
 }
