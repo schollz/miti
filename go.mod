@@ -1,4 +1,4 @@
-module github.com/schollz/saps
+module github.com/schollz/s4
 
 go 1.14
 

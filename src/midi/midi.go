@@ -6,7 +6,7 @@ import (
 
 	log "github.com/schollz/logger"
 	"github.com/schollz/portmidi"
-	"github.com/schollz/saps/src/music"
+	"github.com/schollz/s4/src/music"
 )
 
 var outputStreams map[string]*portmidi.Stream

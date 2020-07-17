@@ -1,13 +1,6 @@
-# saps
+# s4
 
-*what is saps?*
-
-- *saps* sees instruments.
-- *saps* speaks MIDI.
-- *saps* reads notes.
-- *saps* feels time.
-- *saps* returns.
-- *saps* is a *simple as possible sequencer*.
+*s4* is *surprisingly simple synthesizer sequencing*.
 
 ## Install
 
@@ -15,18 +8,18 @@ First install `portmidi`, following [these directions](https://schollz.com/blog/
 
 Next install [Go](https://golang.org/dl/) and then in a terminal:
 
-	> go install github.com/schollz/saps
+	> go install github.com/schollz/s4
 
-That's it! `saps` is now available from the command-line.
+That's it! `s4` is now available from the command-line.
 
 ## Usage
 
 ### First steps
 
-To get started, first plugin your instruments to your computer. If you run `saps` you will see which instruments are available to you.
+To get started, first plugin your instruments to your computer. Open a command prompt and type `s4` to see which instruments are available to you.
 
 ```
-> saps
+> s4
 +---------------------------+
 |        INSTRUMENTS        |
 +---------------------------+
@@ -39,7 +32,7 @@ You can use these instruments to build and chain patterns of notes.
 Modify an example in the `examples` to make sure its set to the instrument that you have. Then to run, you can just do
 
 ```
-> saps --file examples/song1.saps
+> s4 --file examples/song1.s4
 [info]  2020/07/17 08:18:12 playing
 ```
 
@@ -47,7 +40,7 @@ And you'll hear some music!
 
 ### Musical notation
 
-*saps* reads a `.saps` file, which is a high-level musical notation developed for *saps*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
+*s4* reads a `.s4` file, which is a high-level musical notation developed for *s4*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
 
 #### Basic pattern
 
@@ -100,7 +93,7 @@ By default, the note played will be the note closest to the previous. If you wan
 
 #### Other specifications
 
-Here are other keywords you can use to modulate the song in the `.saps` file:
+Here are other keywords you can use to modulate the song in the `.s4` file:
 
 Setting the tempo:
 

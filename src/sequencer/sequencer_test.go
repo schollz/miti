@@ -7,7 +7,7 @@ import (
 
 	"github.com/kr/pretty"
 	log "github.com/schollz/logger"
-	"github.com/schollz/saps/src/music"
+	"github.com/schollz/s4/src/music"
 	"github.com/stretchr/testify/assert"
 )
 
