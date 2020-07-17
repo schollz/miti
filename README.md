@@ -89,12 +89,12 @@ instruments <instrument1>
 
 ### Other specifications
 
+Here are other keywords you can use to modulate the song in the `.idim` file:
+
 #### Specific notes
 
 By default, the note played will be the note closest to the previous. If you want to specify the exact note you can add a suffix to include the octave. For example, instead of writing `CEG` you could instead write `C3E4G5` which will span the chord over three octaves.
 
-
-Here are other keywords you can use to modulate the song in the `.idim` file:
 
 #### Setting the tempo
 
