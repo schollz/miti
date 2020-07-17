@@ -1,6 +1,6 @@
 <img src="https://user-images.githubusercontent.com/6550035/87833417-a16ba200-c83c-11ea-8e37-467c97744512.png">
 
-*idim* is for *interfacing different instruments' midi*. It provides surprisingly simple sequencing for synthesizers or other instruments.
+*tidi* is for *interfacing different instruments' midi*. It provides surprisingly simple sequencing for synthesizers or other instruments.
 You can control your synthesizers from your favorite text editor.
 
 ## Install
@@ -9,18 +9,18 @@ First install `portmidi`, following [these directions](https://schollz.com/blog/
 
 Next install [Go](https://golang.org/dl/) and then in a terminal:
 
-	> go install github.com/schollz/idim
+	> go install github.com/schollz/tidi
 
-That's it! `idim` is now available from the command-line.
+That's it! `tidi` is now available from the command-line.
 
 ## Usage
 
 ### First steps
 
-To get started, first plugin your instruments to your computer. Open a command prompt and type `idim` to see which instruments are available to you.
+To get started, first plugin your instruments to your computer. Open a command prompt and type `tidi` to see which instruments are available to you.
 
 ```
-> idim
+> tidi
 +---------------------------+
 |        INSTRUMENTS        |
 +---------------------------+
@@ -33,15 +33,15 @@ You can use these instruments to build and chain patterns of notes.
 Modify an example in the `examples` to make sure its set to the instrument that you have. Then to run, you can just do
 
 ```
-> idim --file examples/song1.idim
+> tidi --file examples/song1.tidi
 [info]  2020/07/17 08:18:12 playing
 ```
 
 And you'll hear some music!
 
-## idim musical notation
+## tidi musical notation
 
-*idim* reads a `.idim` file, which is a high-level musical notation developed for *idim*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
+*tidi* reads a `.tidi` file, which is a high-level musical notation developed for *tidi*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
 
 ### Basic pattern
 
@@ -90,7 +90,7 @@ instruments <instrument1>
 
 ### Other specifications
 
-Here are other keywords you can use to modulate the song in the `.idim` file:
+Here are other keywords you can use to modulate the song in the `.tidi` file:
 
 #### Specific notes
 

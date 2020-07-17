@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	log "github.com/schollz/logger"
-	"github.com/schollz/idim/src/sequencer"
+	"github.com/schollz/tidi/src/sequencer"
 )
 
 func Run() (err error) {

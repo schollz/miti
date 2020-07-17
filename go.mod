@@ -1,4 +1,4 @@
-module github.com/schollz/idim
+module github.com/schollz/tidi
 
 go 1.14
 

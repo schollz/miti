@@ -8,8 +8,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/schollz/idim/src/metronome"
-	"github.com/schollz/idim/src/music"
+	"github.com/schollz/tidi/src/metronome"
+	"github.com/schollz/tidi/src/music"
 	log "github.com/schollz/logger"
 )
 
