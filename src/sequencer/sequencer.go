@@ -133,7 +133,7 @@ func (s *Sequencer) Parse(fname string) (err error) {
 	for _, line := range strings.Split(data, "\n") {
 		line = strings.TrimSpace(line)
 		log.Debug(line)
-		if strings.HasPrefix(line, "section") {
+		if strings.HasPrefix(line, "pattern") {
 			if len(part.Instruments) > 0 {
 				section.Parts = append(section.Parts, part)
 			}
