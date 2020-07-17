@@ -2,7 +2,6 @@ package midi
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/schollz/idim/src/music"
 	log "github.com/schollz/logger"
@@ -24,10 +23,11 @@ func Init() (devices []string, err error) {
 	}
 	log.Debugf("found %d devices", portmidi.CountDevices())
 
+	outputChannels = make(map[string]chan music.Chord)
 	for i := 0; i < portmidi.CountDevices(); i++ {
 		di := portmidi.Info(portmidi.DeviceID(i))
 		log.Debugf("device %d: '%s', i/o: %v/%v", i, di.Name, di.IsInputAvailable, di.IsOutputAvailable)
-		if di.IsOutputAvailable && !strings.Contains(di.Name, "Microsoft") {
+		if di.IsOutputAvailable {
 			devices = append(devices, di.Name)
 			var outStream *portmidi.Stream
 			outStream, err = portmidi.NewOutputStream(portmidi.DeviceID(i), 4096, 0)
