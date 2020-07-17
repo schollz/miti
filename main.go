@@ -8,10 +8,12 @@ import (
 )
 
 var flagDebug, flagTrace bool
+var flagFile string
 
 func init() {
 	flag.BoolVar(&flagDebug, "debug", false, "debug")
-	flag.BoolVar(&flagTrace, "trace", false, "debug")
+	flag.BoolVar(&flagTrace, "trace", false, "trace")
+	flag.StringVar(&flagFile, "file", "", "file to load")
 }
 
 func main() {
@@ -24,7 +26,7 @@ func main() {
 		log.SetLevel("info")
 	}
 
-	err := play.Play()
+	err := play.Play(flagFile)
 	if err != nil {
 		log.Error(err)
 	}

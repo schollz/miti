@@ -2,9 +2,11 @@ package sequencer
 
 import (
 	"fmt"
+	"io/ioutil"
 	"math"
 	"strconv"
 	"strings"
+	"sync"
 
 	log "github.com/schollz/logger"
 	"github.com/schollz/saps/src/metronome"
@@ -19,6 +21,7 @@ type Sequencer struct {
 
 	measure, section int
 	midiPlay         func(string, music.Chord)
+	sync.Mutex
 }
 
 type Section struct {
@@ -65,6 +68,8 @@ func (s *Sequencer) UpdateTempo(tempo int) {
 }
 
 func (s *Sequencer) Emit(pulse int) {
+	s.Lock()
+	defer s.Unlock()
 	if len(s.Sections) == 0 {
 		return
 	}
@@ -100,14 +105,27 @@ func (s *Sequencer) Emit(pulse int) {
 						chordOff.Notes = append(chordOff.Notes, chord.Notes...)
 					}
 				}
-				s.midiPlay(instrument, chordOff)
-				s.midiPlay(instrument, chordOn)
+				if len(chordOff.Notes) > 0 {
+					//midi.Midi(instrument, chordOff)
+					s.midiPlay(instrument, chordOff)
+				}
+				if len(chordOn.Notes) > 0 {
+					//midi.Midi(instrument, chordOn)
+					s.midiPlay(instrument, chordOn)
+				}
 			}
+			log.Trace("finished emitting")
 		}
 	}
 }
 
-func (s *Sequencer) Parse(data string) (err error) {
+func (s *Sequencer) Parse(fname string) (err error) {
+	b, err := ioutil.ReadFile(fname)
+	if err != nil {
+		return
+	}
+	data := string(b)
+
 	newSections := []Section{}
 
 	var section Section
@@ -130,7 +148,7 @@ func (s *Sequencer) Parse(data string) (err error) {
 				newSections = append(newSections, section)
 			}
 			part = Part{}
-			section = Section{Name: line}
+			section = Section{Name: line, Tempo: section.Tempo}
 		} else if strings.HasPrefix(line, "legato") {
 			fs := strings.Fields(line)
 			if len(fs) > 0 {
@@ -235,6 +253,12 @@ func (s *Sequencer) Parse(data string) (err error) {
 		section.NumMeasures = maxMeasures
 		newSections = append(newSections, section)
 	}
-	s.Sections = newSections
+	if len(newSections) > 0 {
+		s.Lock()
+		s.Sections = newSections
+		s.Unlock()
+	} else {
+		err = fmt.Errorf("no sections found in data:\n----\n%s\n-----", data)
+	}
 	return
 }

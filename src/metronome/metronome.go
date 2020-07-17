@@ -50,10 +50,12 @@ func (m *Metronome) Start() {
 				if m.pulse == PULSES_PER_QUARTER_NOTE*QUARTER_NOTES_PER_MEASURE {
 					m.pulse = 0
 				}
-				m.stepemit(int(m.pulse))
+				go m.stepemit(int(m.pulse))
 			case <-m.update:
+				log.Trace("got metronome update")
 				ticker.Stop()
 				ticker = time.NewTicker(time.Duration(1000000*60/m.tempo/PULSES_PER_QUARTER_NOTE) * time.Microsecond)
+				log.Tracef("ticker time: %+v", time.Duration(1000000*60/m.tempo/PULSES_PER_QUARTER_NOTE)*time.Microsecond)
 			case <-m.stop:
 				ticker.Stop()
 				log.Debug("..ticker stopped!")
@@ -73,8 +75,10 @@ func (m *Metronome) UpdateTempo(tempo int) {
 	if tempo <= 0 || tempo == m.tempo {
 		return
 	}
+	log.Tracef("setting tempo to %d", tempo)
 	m.tempo = tempo
 	if m.on {
 		m.update <- true
 	}
+	log.Tracef("done setting tempo to %d", tempo)
 }

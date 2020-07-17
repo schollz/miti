@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/olekukonko/tablewriter"
 	log "github.com/schollz/logger"
 	"github.com/schollz/saps/src/midi"
@@ -35,18 +36,20 @@ func PrintDevices() (err error) {
 	return
 }
 
-func Play() (err error) {
+func Play(sapsFile string) (err error) {
 	// show devices
 	err = PrintDevices()
 	if err != nil {
 		return
 	}
 
+	if len(sapsFile) == 0 {
+		return
+	}
+
 	// start sequencer with midi equipped
 	seq := sequencer.New(func(s string, c music.Chord) {
-		if c.On && len(c.Notes) > 0 {
-			log.Infof("[%.5s] %s", s, c)
-		}
+		log.Tracef("[%s] forwarding emit", s)
 		errMidi := midi.Midi(s, c)
 		if errMidi != nil {
 			log.Error(errMidi)
@@ -59,33 +62,74 @@ func Play() (err error) {
 	go func() {
 		for sig := range c {
 			log.Debug(sig)
-			seq.Stop()
-			err = midi.Shutdown()
+			go seq.Stop()
+			time.Sleep(500 * time.Millisecond)
+			go midi.Shutdown()
+			time.Sleep(500 * time.Millisecond)
 			os.Exit(1)
 		}
 	}()
 
-	// start tempo
-
-	err = seq.Parse(`section a
-
-	tempo 120
-	instruments NTS-1 digital kit 1 SOUND
-	legato 1
-	A C E A 
-	legato 50
-	A C E A 
-	legato 100
-	A C E A 
-	
-	
- `)
+	// load saps file
+	err = seq.Parse(sapsFile)
 	if err != nil {
 		return
 	}
 
+	// hot-reload file
+	go func() {
+		err = hotReloadFile(seq, sapsFile)
+		if err != nil {
+			log.Error(err)
+		}
+	}()
+
 	seq.Start()
 	time.Sleep(5 * time.Hour)
 
+	return
+}
+
+func hotReloadFile(seq *sequencer.Sequencer, fname string) (err error) {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		return
+	}
+	defer watcher.Close()
+
+	lastEvent := time.Now()
+	done := make(chan bool)
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				log.Debugf("event: %+v", event)
+				if event.Op&fsnotify.Write == fsnotify.Write && time.Since(lastEvent).Seconds() > 1 {
+					log.Infof("reloading: %+v", event.Name)
+					err = seq.Parse(fname)
+					if err != nil {
+						log.Warnf("problem hot-reloading %s: %s", fname, err.Error())
+					} else {
+						midi.NotesOff()
+					}
+					lastEvent = time.Now()
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				log.Error(err)
+			}
+		}
+	}()
+
+	err = watcher.Add(fname)
+	if err != nil {
+		return
+	}
+	<-done
 	return
 }
