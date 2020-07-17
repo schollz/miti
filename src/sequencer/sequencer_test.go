@@ -40,8 +40,8 @@ func TestParse(t *testing.T) {
 	err := s.Parse(config)
 	assert.Nil(t, err)
 	fmt.Printf(pretty.Sprint(s))
-	// s.Start()
-	// time.Sleep(12 * time.Second)
-	// s.Stop()
-	// time.Sleep(1 * time.Second)
+	s.Start()
+	time.Sleep(20 * time.Second)
+	s.Stop()
+	time.Sleep(1 * time.Second)
 }

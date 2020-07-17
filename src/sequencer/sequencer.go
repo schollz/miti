@@ -81,7 +81,6 @@ func (s *Sequencer) Emit(pulse int) {
 }
 
 func (s *Sequencer) Parse(data string) (err error) {
-	isPart := false
 	s.Sections = []Section{}
 
 	var section Section
@@ -93,17 +92,22 @@ func (s *Sequencer) Parse(data string) (err error) {
 			if len(part.Instruments) > 0 {
 				section.Parts = append(section.Parts, part)
 			}
-			if isPart {
+			if len(section.Parts) > 0 {
+				maxMeasures := 0
+				for _, part := range section.Parts {
+					if len(part.Measures) > maxMeasures {
+						maxMeasures = len(part.Measures)
+					}
+				}
+				section.NumMeasures = maxMeasures
 				s.Sections = append(s.Sections, section)
 			}
 			part = Part{}
 			section = Section{Name: line}
-			isPart = false
 		} else if strings.HasPrefix(line, "instruments") {
 			if len(part.Instruments) > 0 {
 				section.Parts = append(section.Parts, part)
 			}
-			isPart = true
 			line = strings.TrimPrefix(line, "instruments")
 			line = strings.TrimPrefix(line, "instrument")
 			instruments := strings.Split(line, ",")
@@ -151,6 +155,13 @@ func (s *Sequencer) Parse(data string) (err error) {
 		section.Parts = append(section.Parts, part)
 	}
 	if len(section.Parts) > 0 {
+		maxMeasures := 0
+		for _, part := range section.Parts {
+			if len(part.Measures) > maxMeasures {
+				maxMeasures = len(part.Measures)
+			}
+		}
+		section.NumMeasures = maxMeasures
 		s.Sections = append(s.Sections, section)
 	}
 	return
