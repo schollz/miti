@@ -71,23 +71,13 @@ func Play() (err error) {
 
 	tempo 120
 	instruments NTS-1 digital kit 1 SOUND
-	A C E A C E A C A C E A C E A C   
-	C5 G E4 C5 G E4 C5 G E4 C5 G E4 C5 G E4 C5 G E4 C5 G E4 C5 G E4 C5 G E4 C5 G E4 C5 G E4 C5 G E4
+	legato 1
+	A C E A 
+	legato 50
+	A C E A 
+	legato 100
+	A C E A 
 	
-	instruments Boutique SH-01A
-	A3CE  
-	C4EG 
-	A3CE  
-	C4EG 
-	
-	section b
-		
-	
-	instruments Boutique SH-01A
-	DF#A
-	DF#A
-	DF#A
-	DF#A
 	
  `)
 	if err != nil {

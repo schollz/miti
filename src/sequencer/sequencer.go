@@ -2,6 +2,7 @@ package sequencer
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -31,6 +32,7 @@ type Section struct {
 type Part struct {
 	Instruments []string
 	Measures    []Measure
+	Legato      int
 }
 
 // Measure is all the notes contained within 4-beats
@@ -129,6 +131,21 @@ func (s *Sequencer) Parse(data string) (err error) {
 			}
 			part = Part{}
 			section = Section{Name: line}
+		} else if strings.HasPrefix(line, "legato") {
+			fs := strings.Fields(line)
+			if len(fs) > 0 {
+				part.Legato, err = strconv.Atoi(fs[1])
+				if err != nil {
+					err = fmt.Errorf("problem parsing legato: %s", fs[1])
+					return
+				}
+				if part.Legato < 0 {
+					part.Legato = 0
+				}
+				if part.Legato > 100 {
+					part.Legato = 100
+				}
+			}
 		} else if strings.HasPrefix(line, "tempo") {
 			fs := strings.Fields(line)
 			if len(fs) > 0 {
@@ -136,6 +153,11 @@ func (s *Sequencer) Parse(data string) (err error) {
 				if err != nil {
 					err = fmt.Errorf("problem parsing tempo: %s", fs[1])
 					return
+				}
+				if section.Tempo < 1 {
+					section.Tempo = 1
+				} else if section.Tempo > 300 {
+					section.Tempo = 300
 				}
 			}
 		} else if strings.HasPrefix(line, "instruments") {
@@ -148,7 +170,7 @@ func (s *Sequencer) Parse(data string) (err error) {
 			for i := range instruments {
 				instruments[i] = strings.TrimSpace(instruments[i])
 			}
-			part = Part{Instruments: instruments}
+			part = Part{Instruments: instruments, Legato: 100}
 		} else if len(line) > 0 {
 			measure := Measure{Emit: make(map[int][]music.Chord)}
 			fs := strings.Fields(line)
@@ -170,8 +192,22 @@ func (s *Sequencer) Parse(data string) (err error) {
 				}
 				measure.Chords = append(measure.Chords, music.Chord{Notes: notes})
 				startPulse := float64(i) / float64(len(fs)) * (QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE - 1)
-				endPulse := startPulse + 1/float64(len(fs))*(QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE-1)
-				// TODO: add in legato and change endPulse accordingly
+				endPulse := startPulse + float64(part.Legato)/100.0*1/float64(len(fs))*(QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE-1)
+				startPulse = math.Round(startPulse)
+				endPulse = math.Round(endPulse)
+				if startPulse < 0 {
+					startPulse = 0
+				} else if startPulse > (QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE - 2) {
+					startPulse = (QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE - 2)
+				}
+				if endPulse < 1 {
+					endPulse = 1
+				} else if endPulse > (QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE - 1) {
+					endPulse = (QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE - 1)
+				}
+				if endPulse <= startPulse {
+					endPulse = startPulse + 1
+				}
 
 				if _, ok := measure.Emit[int(startPulse)]; !ok {
 					measure.Emit[int(startPulse)] = []music.Chord{}
