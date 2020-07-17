@@ -91,6 +91,9 @@ func (s *Sequencer) Emit(pulse int) {
 
 	// check for notes to emit
 	for _, part := range s.Sections[s.section].Parts {
+		if len(part.Measures) == 0 {
+			continue
+		}
 		measure := part.Measures[s.measure%len(part.Measures)]
 		if e, ok := measure.Emit[pulse]; ok {
 			// emit
