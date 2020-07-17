@@ -3,6 +3,7 @@ module github.com/schollz/idim
 go 1.14
 
 require (
+	github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.3.0 // indirect

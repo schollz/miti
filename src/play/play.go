@@ -49,13 +49,28 @@ func Play(idimFile string) (err error) {
 		return
 	}
 
+	playDone := make(chan bool)
+	watcherDone := make(chan bool)
+	shutdownInitiated := false
+
 	// start sequencer with midi equipped
+	// if log.GetLevel() == "info" {
+	// 	tm.Clear()
+	// }
 	seq := sequencer.New(func(s string, c music.Chord) {
+		if shutdownInitiated {
+			return
+		}
 		log.Tracef("[%s] forwarding emit", s)
 		errMidi := midi.Midi(s, c)
 		if errMidi != nil {
 			log.Error(errMidi)
 		}
+		// if log.GetLevel() == "info" {
+		// 	tm.MoveCursor(1, 1)
+		// 	tm.Printf("%s: %+v\n\n", s, c)
+		// 	tm.Flush()
+		// }
 	})
 
 	// shutdown everything on Ctl+C
@@ -63,13 +78,16 @@ func Play(idimFile string) (err error) {
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		for sig := range c {
+			shutdownInitiated = true
 			log.Debug(sig)
 			log.Info("shutting down")
 			go seq.Stop()
-			time.Sleep(500 * time.Millisecond)
-			go midi.Shutdown()
-			time.Sleep(500 * time.Millisecond)
-			os.Exit(1)
+			time.Sleep(50 * time.Millisecond)
+			midi.Shutdown()
+			time.Sleep(50 * time.Millisecond)
+			watcherDone <- true
+			time.Sleep(50 * time.Millisecond)
+			playDone <- true
 		}
 	}()
 
@@ -81,7 +99,7 @@ func Play(idimFile string) (err error) {
 
 	// hot-reload file
 	go func() {
-		err = hotReloadFile(seq, idimFile)
+		err = hotReloadFile(seq, idimFile, watcherDone)
 		if err != nil {
 			log.Error(err)
 		}
@@ -89,12 +107,11 @@ func Play(idimFile string) (err error) {
 
 	log.Info("playing")
 	seq.Start()
-	time.Sleep(5 * time.Hour)
-
+	<-playDone
 	return
 }
 
-func hotReloadFile(seq *sequencer.Sequencer, fname string) (err error) {
+func hotReloadFile(seq *sequencer.Sequencer, fname string, watcherDone chan bool) (err error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return
@@ -106,6 +123,9 @@ func hotReloadFile(seq *sequencer.Sequencer, fname string) (err error) {
 	go func() {
 		for {
 			select {
+			case _ = <-watcherDone:
+				done <- true
+				return
 			case event, ok := <-watcher.Events:
 				if !ok {
 					return
@@ -136,5 +156,6 @@ func hotReloadFile(seq *sequencer.Sequencer, fname string) (err error) {
 		return
 	}
 	<-done
+	log.Debug("watcher done")
 	return
 }

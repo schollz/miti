@@ -2,6 +2,7 @@ package midi
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/schollz/idim/src/music"
 	log "github.com/schollz/logger"
@@ -27,17 +28,23 @@ func Init() (devices []string, err error) {
 	for i := 0; i < portmidi.CountDevices(); i++ {
 		di := portmidi.Info(portmidi.DeviceID(i))
 		log.Debugf("device %d: '%s', i/o: %v/%v", i, di.Name, di.IsInputAvailable, di.IsOutputAvailable)
-		if di.IsOutputAvailable {
+		if di.IsOutputAvailable && !strings.Contains(di.Name, "Wavetable Synth") {
 			devices = append(devices, di.Name)
 			var outStream *portmidi.Stream
 			outStream, err = portmidi.NewOutputStream(portmidi.DeviceID(i), 4096, 0)
 			if err != nil {
+				err = fmt.Errorf("could not open stream to %s: %s", di.Name, err.Error())
 				return
 			}
 			// create a buffered channel for each instrument
 			outputChannels[di.Name] = make(chan music.Chord, 100)
 			// create a go-routine for each instrument
 			go func(instrument string, outputStream *portmidi.Stream) {
+				defer func() {
+					if r := recover(); r != nil {
+						log.Debug("recovered panic")
+					}
+				}()
 				midis := make([]int64, 100)
 				velocities := make([]int64, 100)
 				notesOn := make(map[int64]bool)
@@ -56,7 +63,7 @@ func Init() (devices []string, err error) {
 					}
 					if chord.Notes[0].MIDI == -2 {
 						// shutdown
-						outputStream.Close()
+						outputStream.Abort()
 						return
 					}
 					lenChordNotes := 0
@@ -71,6 +78,9 @@ func Init() (devices []string, err error) {
 						notesOn[midis[i]] = chord.On
 						velocities[i] = 100
 						lenChordNotes++
+					}
+					if lenChordNotes == 0 {
+						continue
 					}
 					if chord.On {
 						err = outputStream.WriteShorts(0x90, midis[:lenChordNotes], velocities[:lenChordNotes])
