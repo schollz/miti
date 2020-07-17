@@ -137,7 +137,8 @@ func (s *Sequencer) Parse(data string) (err error) {
 				measure.Chords = append(measure.Chords, music.Chord{Notes: notes})
 				startPulse := float64(i) / float64(len(fs)) * (QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE - 1)
 				endPulse := startPulse + 1/float64(len(fs))*(QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE-1)
-				// TODO: add in legato
+				// TODO: add in legato and change endPulse accordingly
+
 				if _, ok := measure.Emit[int(startPulse)]; !ok {
 					measure.Emit[int(startPulse)] = []music.Chord{}
 				}
