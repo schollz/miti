@@ -197,9 +197,9 @@ func (s *Sequencer) Parse(fname string) (err error) {
 					continue
 				}
 				holdNote := false
-				if strings.HasSuffix(cluster, "*") {
+				if strings.HasSuffix(cluster, "-") {
 					holdNote = true
-					cluster = strings.TrimSuffix(cluster, "*")
+					cluster = strings.TrimSuffix(cluster, "-")
 				}
 				var notes []music.Note
 				if len(measure.Chords) > 0 {

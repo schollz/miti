@@ -117,8 +117,14 @@ legato <1-100>
 For a pedal note (sustain) add a `*` to the end of the note. For example, the following will sustain a C major chord for two measures:
 
 ```
-CEG* 
+CEG- 
 CEG
+```
+
+This next example shows how to hold out a C major chord for 3 beats:
+
+```
+CEG- CEG- CEG .
 ```
 
 #### Multiple instruments
