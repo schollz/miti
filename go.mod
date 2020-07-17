@@ -1,4 +1,4 @@
-module github.com/schollz/tidi
+module github.com/schollz/miti
 
 go 1.14
 

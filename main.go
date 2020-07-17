@@ -4,7 +4,7 @@ import (
 	"flag"
 
 	log "github.com/schollz/logger"
-	"github.com/schollz/tidi/src/play"
+	"github.com/schollz/miti/src/play"
 )
 
 var flagDebug, flagTrace bool

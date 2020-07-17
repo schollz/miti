@@ -1,6 +1,6 @@
 <img src="https://user-images.githubusercontent.com/6550035/87833417-a16ba200-c83c-11ea-8e37-467c97744512.png">
 
-*tidi* is for *interfacing different instruments' midi*. It provides surprisingly simple sequencing for synthesizers or other instruments.
+*miti* is . It provides surprisingly simple sequencing for synthesizers or other instruments.
 You can control your synthesizers from your favorite text editor.
 
 ## Install
@@ -9,18 +9,18 @@ First install `portmidi`, following [these directions](https://schollz.com/blog/
 
 Next install [Go](https://golang.org/dl/) and then in a terminal:
 
-	> go install github.com/schollz/tidi
+	> go install github.com/schollz/miti
 
-That's it! `tidi` is now available from the command-line.
+That's it! `miti` is now available from the command-line.
 
 ## Usage
 
 ### First steps
 
-To get started, first plugin your instruments to your computer. Open a command prompt and type `tidi` to see which instruments are available to you.
+To get started, first plugin your instruments to your computer. Open a command prompt and type `miti` to see which instruments are available to you.
 
 ```
-> tidi
+> miti
 +---------------------------+
 |        INSTRUMENTS        |
 +---------------------------+
@@ -33,15 +33,15 @@ You can use these instruments to build and chain patterns of notes.
 Modify an example in the `examples` to make sure its set to the instrument that you have. Then to run, you can just do
 
 ```
-> tidi --file examples/song1.tidi
+> miti --file examples/song1.miti
 [info]  2020/07/17 08:18:12 playing
 ```
 
 And you'll hear some music!
 
-## tidi musical notation
+## miti musical notation
 
-*tidi* reads a `.tidi` file, which is a high-level musical notation developed for *tidi*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
+*miti* reads a `.miti` file, which is a high-level musical notation developed for *miti*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
 
 ### Basic pattern
 
@@ -90,7 +90,7 @@ instruments <instrument1>
 
 ### Other specifications
 
-Here are other keywords you can use to modulate the song in the `.tidi` file:
+Here are other keywords you can use to modulate the song in the `.miti` file:
 
 #### Specific notes
 

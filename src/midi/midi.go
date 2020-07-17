@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/schollz/tidi/src/music"
+	"github.com/schollz/miti/src/music"
 	log "github.com/schollz/logger"
 	"github.com/schollz/portmidi"
 )
