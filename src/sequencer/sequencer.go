@@ -108,7 +108,7 @@ func (s *Sequencer) Emit(pulse int) {
 }
 
 func (s *Sequencer) Parse(data string) (err error) {
-	s.Sections = []Section{}
+	newSections := []Section{}
 
 	var section Section
 	var part Part
@@ -127,7 +127,7 @@ func (s *Sequencer) Parse(data string) (err error) {
 					}
 				}
 				section.NumMeasures = maxMeasures
-				s.Sections = append(s.Sections, section)
+				newSections = append(newSections, section)
 			}
 			part = Part{}
 			section = Section{Name: line}
@@ -233,7 +233,8 @@ func (s *Sequencer) Parse(data string) (err error) {
 			}
 		}
 		section.NumMeasures = maxMeasures
-		s.Sections = append(s.Sections, section)
+		newSections = append(newSections, section)
 	}
+	s.Sections = newSections
 	return
 }

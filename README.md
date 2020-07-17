@@ -111,6 +111,7 @@ legato <1-100>
 - [x] Add legato control `legato: 90`
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
 - [ ] Understand chords `Bmin Gmaj`
+- [ ] Hot-reload file
 
 ## License 
 
