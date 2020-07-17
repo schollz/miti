@@ -107,6 +107,12 @@ Changing the legato:
 legato <1-100>
 ```
 
+For a pedal note (sustain) add a `*` to the end of the note. For example, the following will sustain a C major chord for two measures:
+
+```
+CEG* 
+CEG
+```
 
 ## To Do
 
@@ -116,7 +122,7 @@ legato <1-100>
 - [x] in midi, each instrument keeps track of which notes are off
 - [x] in midi, accept -1 to turn off all notes 
 - [x] in midi, accept -2 to turn off all notes and shut down
-- [ ] Add `*` suffix for creating legato
+- [x] Add `*` suffix for creating legato
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
 - [ ] Understand chords `Bmin Gmaj`
 
