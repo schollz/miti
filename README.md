@@ -1,6 +1,6 @@
 # idim
 
-*idim* is *surprisingly simple synthesizer sequencing*.
+*idim* is for *interfacing different instruments' midi*. It provides surprisingly simple sequencing for synthesizers or other instruments.
 
 ## Install
 
@@ -122,7 +122,7 @@ CEG
 - [x] in midi, each instrument keeps track of which notes are off
 - [x] in midi, accept -1 to turn off all notes 
 - [x] in midi, accept -2 to turn off all notes and shut down
-- [x] Add `*` suffix for creating legato
+- [x] Add `*` suffix for adding sustain
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
 - [ ] Understand chords `Bmin Gmaj`
 
