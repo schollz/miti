@@ -62,6 +62,7 @@ func Play(sapsFile string) (err error) {
 	go func() {
 		for sig := range c {
 			log.Debug(sig)
+			log.Info("shutting down")
 			go seq.Stop()
 			time.Sleep(500 * time.Millisecond)
 			go midi.Shutdown()
@@ -84,6 +85,7 @@ func Play(sapsFile string) (err error) {
 		}
 	}()
 
+	log.Info("playing")
 	seq.Start()
 	time.Sleep(5 * time.Hour)
 
@@ -108,14 +110,15 @@ func hotReloadFile(seq *sequencer.Sequencer, fname string) (err error) {
 				}
 				log.Debugf("event: %+v", event)
 				if event.Op&fsnotify.Write == fsnotify.Write && time.Since(lastEvent).Seconds() > 1 {
+					lastEvent = time.Now()
 					log.Infof("reloading: %+v", event.Name)
+					time.Sleep(100 * time.Millisecond)
 					err = seq.Parse(fname)
 					if err != nil {
 						log.Warnf("problem hot-reloading %s: %s", fname, err.Error())
 					} else {
 						midi.NotesOff()
 					}
-					lastEvent = time.Now()
 				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
