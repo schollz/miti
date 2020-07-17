@@ -38,11 +38,11 @@ Modify an example in the `examples` to make sure its set to the instrument that 
 
 And you'll hear some music!
 
-### Musical notation
+## idim musical notation
 
 *idim* reads a `.idim` file, which is a high-level musical notation developed for *idim*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
 
-#### Basic pattern
+### Basic pattern
 
 The basic unit is the *pattern*. A *pattern* contains a collection of *instruments*. Each *instrument* contains a collection of notes.
 For example, here is a simple pattern that plays Cmaj followed by Fmaj and then repeats.
@@ -61,7 +61,7 @@ Each line under `instruments` designates a different measure. This is where you 
 
 To add more patterns, simply add a line with `pattern X` and again add `instruments` and their notes. The patterns will be played in order.
 
-#### Add instruments and subdivisions
+### Add instruments and subdivisions
 
 You can easily add a second instrument to this section by adding another line with the instrument name:
 
@@ -86,26 +86,32 @@ instruments <instrument1>
 . FAC . . . FAC . . 
 ```
 
-#### Specific notes
+### Specific notes
 
 By default, the note played will be the note closest to the previous. If you want to specify the exact note you can add a suffix to include the octave. For example, instead of writing `CEG` you could instead write `C3E4G5` which will span the chord over three octaves.
 
 
-#### Other specifications
+### Other specifications
 
 Here are other keywords you can use to modulate the song in the `.idim` file:
 
-Setting the tempo:
+#### Setting the tempo
+
+You can add a line to change the tempo, anywhere in the file.
 
 ```
 tempo <10-300>
 ````
 
-Changing the legato:
+#### Changing the legato
+
+The legato specifies how much to hold each note until releasing it. Full legato (100) holds to the very end, while the shortest legato (1) will release immediately after playing.
 
 ```
 legato <1-100>
 ```
+
+#### Sustain 
 
 For a pedal note (sustain) add a `*` to the end of the note. For example, the following will sustain a C major chord for two measures:
 
@@ -113,6 +119,8 @@ For a pedal note (sustain) add a `*` to the end of the note. For example, the fo
 CEG* 
 CEG
 ```
+
+
 
 ## To Do
 
