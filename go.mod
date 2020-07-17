@@ -1,4 +1,4 @@
-module github.com/schollz/s4
+module github.com/schollz/idim
 
 go 1.14
 

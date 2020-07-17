@@ -6,7 +6,7 @@ import (
 
 	log "github.com/schollz/logger"
 	"github.com/schollz/portmidi"
-	"github.com/schollz/s4/src/music"
+	"github.com/schollz/idim/src/music"
 )
 
 var outputChannels map[string]chan music.Chord

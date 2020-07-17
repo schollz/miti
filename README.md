@@ -1,6 +1,6 @@
-# s4
+# idim
 
-*s4* is *surprisingly simple synthesizer sequencing*.
+*idim* is *surprisingly simple synthesizer sequencing*.
 
 ## Install
 
@@ -8,18 +8,18 @@ First install `portmidi`, following [these directions](https://schollz.com/blog/
 
 Next install [Go](https://golang.org/dl/) and then in a terminal:
 
-	> go install github.com/schollz/s4
+	> go install github.com/schollz/idim
 
-That's it! `s4` is now available from the command-line.
+That's it! `idim` is now available from the command-line.
 
 ## Usage
 
 ### First steps
 
-To get started, first plugin your instruments to your computer. Open a command prompt and type `s4` to see which instruments are available to you.
+To get started, first plugin your instruments to your computer. Open a command prompt and type `idim` to see which instruments are available to you.
 
 ```
-> s4
+> idim
 +---------------------------+
 |        INSTRUMENTS        |
 +---------------------------+
@@ -32,7 +32,7 @@ You can use these instruments to build and chain patterns of notes.
 Modify an example in the `examples` to make sure its set to the instrument that you have. Then to run, you can just do
 
 ```
-> s4 --file examples/song1.s4
+> idim --file examples/song1.idim
 [info]  2020/07/17 08:18:12 playing
 ```
 
@@ -40,7 +40,7 @@ And you'll hear some music!
 
 ### Musical notation
 
-*s4* reads a `.s4` file, which is a high-level musical notation developed for *s4*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
+*idim* reads a `.idim` file, which is a high-level musical notation developed for *idim*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
 
 #### Basic pattern
 
@@ -93,7 +93,7 @@ By default, the note played will be the note closest to the previous. If you wan
 
 #### Other specifications
 
-Here are other keywords you can use to modulate the song in the `.s4` file:
+Here are other keywords you can use to modulate the song in the `.idim` file:
 
 Setting the tempo:
 
@@ -112,9 +112,15 @@ legato <1-100>
 
 - [x] Add legato control `legato: 90`
 - [x] Hot-reload file
-- [ ] in midi, create a channel for each instrument
+- [x] in midi, create a channel for each instrument
+- [ ] in midi, each instrument keeps track of which notes are off
+- [ ] in midi, accept -1 to turn off all notes 
+- [ ] in midi, accept -2 to turn off all notes and shut down
+- [ ] Add `*` suffix for creating legato
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
 - [ ] Understand chords `Bmin Gmaj`
+
+
 
 ## License 
 

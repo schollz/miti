@@ -9,8 +9,8 @@ import (
 	"sync"
 
 	log "github.com/schollz/logger"
-	"github.com/schollz/s4/src/metronome"
-	"github.com/schollz/s4/src/music"
+	"github.com/schollz/idim/src/metronome"
+	"github.com/schollz/idim/src/music"
 )
 
 const QUARTERNOTES_PER_MEASURE = 4

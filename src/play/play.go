@@ -9,9 +9,9 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/olekukonko/tablewriter"
 	log "github.com/schollz/logger"
-	"github.com/schollz/s4/src/midi"
-	"github.com/schollz/s4/src/music"
-	"github.com/schollz/s4/src/sequencer"
+	"github.com/schollz/idim/src/midi"
+	"github.com/schollz/idim/src/music"
+	"github.com/schollz/idim/src/sequencer"
 )
 
 func PrintDevices() (err error) {
@@ -36,14 +36,14 @@ func PrintDevices() (err error) {
 	return
 }
 
-func Play(s4File string) (err error) {
+func Play(idimFile string) (err error) {
 	// show devices
 	err = PrintDevices()
 	if err != nil {
 		return
 	}
 
-	if len(s4File) == 0 {
+	if len(idimFile) == 0 {
 		return
 	}
 
@@ -71,15 +71,15 @@ func Play(s4File string) (err error) {
 		}
 	}()
 
-	// load s4 file
-	err = seq.Parse(s4File)
+	// load idim file
+	err = seq.Parse(idimFile)
 	if err != nil {
 		return
 	}
 
 	// hot-reload file
 	go func() {
-		err = hotReloadFile(seq, s4File)
+		err = hotReloadFile(seq, idimFile)
 		if err != nil {
 			log.Error(err)
 		}
