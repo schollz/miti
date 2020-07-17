@@ -27,14 +27,23 @@ To get started, first plugin your instruments to your computer. If you run `saps
 
 ```
 > saps
-Available instruments:
-
-***********
-* NTS-1   *
-***********
++---------------------------+
+|        INSTRUMENTS        |
++---------------------------+
+| NTS-1 digital kit 1 SOUND |
++---------------------------+
 ```
 
 You can use these instruments to build and chain patterns of notes.
+
+Modify an example in the `examples` to make sure its set to the instrument that you have. Then to run, you can just do
+
+```
+> saps --file examples/song1.saps
+[info]  2020/07/17 08:18:12 playing
+```
+
+And you'll hear some music!
 
 ### Musical notation
 
@@ -53,7 +62,7 @@ FAC
 ```
 
 The `pattern a` designates the pattern name, "a". This pattern has a single instrument, `<instrument1>` 
-(normally you will fill in the name of an instrument that matches one given above). 
+(normally you will fill in the name of an instrument, like `NTS-1 digital kit 1 SOUND` in the example above). 
 
 Each line under `instruments` designates a different measure. This is where you put notes. Notes without spaces are considered a chord and will be played simultaneously. The first measure plays C, E, and G (C major) and the second measure plays F, A and C (F major). This pattern will repeat indefinitely when played.
 
