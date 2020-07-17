@@ -1,6 +1,4 @@
-# idim
-
-<img src="https://user-images.githubusercontent.com/6550035/87832482-f60e1d80-c83a-11ea-9d2f-92608ab119da.png">
+<img src="https://user-images.githubusercontent.com/6550035/87833417-a16ba200-c83c-11ea-8e37-467c97744512.png">
 
 *idim* is for *interfacing different instruments' midi*. It provides surprisingly simple sequencing for synthesizers or other instruments.
 You can control your synthesizers from your favorite text editor.
