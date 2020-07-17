@@ -23,12 +23,15 @@ type Section struct {
 	NumMeasures int
 }
 
+// Part contains the list of instruments and their measures
 type Part struct {
 	Instruments []string
 	Measures    []Measure
 }
 
+// Measure is all the notes contained within 4-beats
 type Measure struct {
+	// Emit contains the data that will be emitted
 	Emit   map[int][]music.Chord
 	Chords []music.Chord
 }
@@ -54,7 +57,11 @@ func (s *Sequencer) UpdateTempo(tempo int) {
 }
 
 func (s *Sequencer) Emit(pulse int) {
-	if pulse == 0 && len(s.Sections) > 0 {
+	if len(s.Sections) == 0 {
+		return
+	}
+
+	if pulse == 0 {
 		s.measure++
 		if s.measure == s.Sections[s.section].NumMeasures {
 			s.section++
@@ -63,7 +70,6 @@ func (s *Sequencer) Emit(pulse int) {
 		}
 		log.Trace(s.section, s.measure, pulse)
 	}
-
 	// check for notes to emit
 	for _, part := range s.Sections[s.section].Parts {
 		measure := part.Measures[s.measure%len(part.Measures)]
@@ -90,6 +96,7 @@ func (s *Sequencer) Parse(data string) (err error) {
 			if isPart {
 				s.Sections = append(s.Sections, section)
 			}
+			part = Part{}
 			section = Section{Name: line}
 			isPart = false
 		} else if strings.HasPrefix(line, "instruments") {
@@ -139,6 +146,12 @@ func (s *Sequencer) Parse(data string) (err error) {
 			}
 			part.Measures = append(part.Measures, measure)
 		}
+	}
+	if len(part.Instruments) > 0 {
+		section.Parts = append(section.Parts, part)
+	}
+	if len(section.Parts) > 0 {
+		s.Sections = append(s.Sections, section)
 	}
 	return
 }

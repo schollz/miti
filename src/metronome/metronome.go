@@ -36,6 +36,7 @@ func (m *Metronome) Start() {
 		log.Debug("metronome already running")
 		return
 	}
+	log.Debug("starting metronome")
 	m.on = true
 	m.pulse = -1
 	go func() {

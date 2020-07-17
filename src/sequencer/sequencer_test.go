@@ -1,9 +1,11 @@
 package sequencer
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
+	"github.com/kr/pretty"
 	log "github.com/schollz/logger"
 	"github.com/stretchr/testify/assert"
 )
@@ -35,11 +37,11 @@ func TestParse(t *testing.T) {
  DF#A `
 
 	s := New()
-	s.UpdateTempo(120)
 	err := s.Parse(config)
 	assert.Nil(t, err)
-	s.Start()
-	time.Sleep(12 * time.Second)
-	s.Stop()
-	time.Sleep(1 * time.Second)
+	fmt.Printf(pretty.Sprint(s))
+	// s.Start()
+	// time.Sleep(12 * time.Second)
+	// s.Stop()
+	// time.Sleep(1 * time.Second)
 }
