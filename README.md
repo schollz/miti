@@ -1,10 +1,25 @@
 # saps
 
-*simple as possible sequencer*
+*what is saps?*
+
+*saps* is a *simple as possible sequencer*.
 
 - *saps* sees instruments.
-- *saps* knows notes.
+- *saps* reads notes.
+- *saps* feels time.
+- *saps* returns.
 
+## Install
+
+First install `portmidi`, following [these directions](https://schollz.com/blog/portmidi/).
+
+Next install [Go](https://golang.org/dl/) and then in a terminal:
+
+	> go install github.com/schollz/saps
+
+That's it! `saps` is now available from the command-line.
+
+## 
 
 - number of measures is biggest number of measures in each
 
