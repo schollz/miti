@@ -8,9 +8,9 @@ import (
 	"strings"
 	"sync"
 
-	log "github.com/schollz/logger"
 	"github.com/schollz/idim/src/metronome"
 	"github.com/schollz/idim/src/music"
+	log "github.com/schollz/logger"
 )
 
 const QUARTERNOTES_PER_MEASURE = 4
@@ -196,6 +196,11 @@ func (s *Sequencer) Parse(fname string) (err error) {
 				if cluster == "." {
 					continue
 				}
+				holdNote := false
+				if strings.HasSuffix(cluster, "*") {
+					holdNote = true
+					cluster = strings.TrimSuffix(cluster, "*")
+				}
 				var notes []music.Note
 				if len(measure.Chords) > 0 {
 					lastChord := measure.Chords[len(measure.Chords)-1]
@@ -231,11 +236,13 @@ func (s *Sequencer) Parse(fname string) (err error) {
 					measure.Emit[int(startPulse)] = []music.Chord{}
 				}
 				measure.Emit[int(startPulse)] = append(measure.Emit[int(startPulse)], music.Chord{Notes: notes, On: true})
-				if _, ok := measure.Emit[int(endPulse)]; !ok {
-					measure.Emit[int(endPulse)] = []music.Chord{}
-				}
-				measure.Emit[int(endPulse)] = append(measure.Emit[int(endPulse)], music.Chord{Notes: notes, On: false})
 
+				if !holdNote {
+					if _, ok := measure.Emit[int(endPulse)]; !ok {
+						measure.Emit[int(endPulse)] = []music.Chord{}
+					}
+					measure.Emit[int(endPulse)] = append(measure.Emit[int(endPulse)], music.Chord{Notes: notes, On: false})
+				}
 			}
 			part.Measures = append(part.Measures, measure)
 		}

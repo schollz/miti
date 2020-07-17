@@ -113,9 +113,9 @@ legato <1-100>
 - [x] Add legato control `legato: 90`
 - [x] Hot-reload file
 - [x] in midi, create a channel for each instrument
-- [ ] in midi, each instrument keeps track of which notes are off
-- [ ] in midi, accept -1 to turn off all notes 
-- [ ] in midi, accept -2 to turn off all notes and shut down
+- [x] in midi, each instrument keeps track of which notes are off
+- [x] in midi, accept -1 to turn off all notes 
+- [x] in midi, accept -2 to turn off all notes and shut down
 - [ ] Add `*` suffix for creating legato
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
 - [ ] Understand chords `Bmin Gmaj`

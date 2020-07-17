@@ -8,10 +8,10 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/olekukonko/tablewriter"
-	log "github.com/schollz/logger"
 	"github.com/schollz/idim/src/midi"
 	"github.com/schollz/idim/src/music"
 	"github.com/schollz/idim/src/sequencer"
+	log "github.com/schollz/logger"
 )
 
 func PrintDevices() (err error) {
@@ -20,7 +20,9 @@ func PrintDevices() (err error) {
 		return
 	}
 	if len(devices) == 0 {
-		err = fmt.Errorf("no devices detected, try plugging some")
+		fmt.Println(`+-------------------+
+| NO INSTRUMENTS :( |
++-------------------+`)
 		return
 	}
 	data := [][]string{}

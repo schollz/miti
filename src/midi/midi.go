@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/schollz/idim/src/music"
 	log "github.com/schollz/logger"
 	"github.com/schollz/portmidi"
-	"github.com/schollz/idim/src/music"
 )
 
 var outputChannels map[string]chan music.Chord
-var encounteredNotes map[int64]struct{}
 var inited bool
 
 func Init() (devices []string, err error) {
@@ -25,7 +24,6 @@ func Init() (devices []string, err error) {
 	}
 	log.Debugf("found %d devices", portmidi.CountDevices())
 
-	encounteredNotes = make(map[int64]struct{})
 	for i := 0; i < portmidi.CountDevices(); i++ {
 		di := portmidi.Info(portmidi.DeviceID(i))
 		log.Debugf("device %d: '%s', i/o: %v/%v", i, di.Name, di.IsInputAvailable, di.IsOutputAvailable)
@@ -42,17 +40,36 @@ func Init() (devices []string, err error) {
 			go func(instrument string, outputStream *portmidi.Stream) {
 				midis := make([]int64, 100)
 				velocities := make([]int64, 100)
+				notesOn := make(map[int64]bool)
 				for {
 					chord := <-outputChannels[instrument]
-					lenChordNotes := len(chord.Notes)
+					// special things
+					// midi note -1 turns off all on notes
+					// midi note -2 turns off all on notes and shuts down
+					if chord.Notes[0].MIDI < 0 {
+						// turn off all notes
+						for note := range notesOn {
+							if notesOn[note] {
+								outputStream.WriteShort(0x80, note, 0)
+							}
+						}
+					}
+					if chord.Notes[0].MIDI == -2 {
+						// shutdown
+						outputStream.Close()
+						return
+					}
+					lenChordNotes := 0
 					for i, n := range chord.Notes {
 						midis[i] = int64(n.MIDI)
-						if midis[i] == -1 {
-							outputStream.Close()
-							return
+						if alreadyOn, ok := notesOn[midis[i]]; ok {
+							if alreadyOn {
+								continue
+							}
 						}
-						encounteredNotes[midis[i]] = struct{}{}
+						notesOn[midis[i]] = chord.On
 						velocities[i] = 100
+						lenChordNotes++
 					}
 					if chord.On {
 						err = outputStream.WriteShorts(0x90, midis[:lenChordNotes], velocities[:lenChordNotes])
@@ -76,22 +93,15 @@ func Init() (devices []string, err error) {
 
 func Shutdown() (err error) {
 	inited = false
-	err = NotesOff()
-	if err != nil {
-		log.Error(err)
-	}
 	for out := range outputChannels {
-		outputChannels[out] <- music.Chord{Notes: []music.Note{music.Note{MIDI: -1}}, On: false}
+		outputChannels[out] <- music.Chord{Notes: []music.Note{music.Note{MIDI: -2}}, On: false}
 	}
 	return portmidi.Terminate()
 }
 
 func NotesOff() (err error) {
 	for out := range outputChannels {
-		for note := range encounteredNotes {
-			log.Tracef("'%s' %d off ", out, note)
-			outputChannels[out] <- music.Chord{Notes: []music.Note{music.Note{MIDI: int(note)}}, On: false}
-		}
+		outputChannels[out] <- music.Chord{Notes: []music.Note{music.Note{MIDI: -1}}, On: false}
 	}
 	return
 }
