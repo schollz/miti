@@ -1,0 +1,36 @@
+pattern a 
+
+tempo 110
+instruments NTS-1 digital kit 1 SOUND
+legato 50
+Bb3 G  Eb- Eb . . . . Bb3 G Eb- Eb . . . .
+Bb3 G  Eb- Eb . . . . Bb3 G Eb- Eb . . . .
+G3  Eb C- C . . . . G3  Eb C- C . . . . 
+G3  Eb C- C . . . . G3  Eb C- C . . . . 
+
+instruments Boutique SH-01A
+Eb3GBb- 
+Eb3GBb- Eb3GBb  D3FBb- D3FBb- D3FBb- D3FBb- D3FBb- D3FBb- 
+D3FBb C3EbG- 
+C3EbG
+
+
+pattern b
+
+instruments NTS-1 digital kit 1 SOUND
+Bb3D4  G3 Eb- Eb . . . . Bb3Eb4 G3 Eb- Eb . . . .
+Bb3Eb4 G3 Eb- Eb . . . Bb3Eb4 G3 Eb- Eb . . . .
+G3C4  Eb3 C- C . . . . G3C4  Eb3 C- C . . . . 
+G3C4  Eb3 C- C . . . . G3C4  Eb3 C- C . . . . 
+Bb3D4  G3 Eb- Eb . . . . Bb3Eb4 G3 Eb- Eb . . . .
+Bb3Eb4 G3 Eb- Eb . . . . Bb3Eb4 G3 Eb- Eb . . . .
+G3C4  Eb3 C- C . . . . G3C4  Eb3 C- C . . . . 
+G3C4  Eb3 C- C . . . . G3C4  Eb3 C- C . . . . 
+
+instruments Boutique SH-01A
+Eb3GBb- 
+Eb3GBb- Eb3GBb  D3FBb- D3FBb- D3FBb- D3FBb- D3FBb- D3FBb- 
+D3FBb C3EbG- 
+C3EbG
+
+

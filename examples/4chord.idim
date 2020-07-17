@@ -1,0 +1,14 @@
+pattern a
+
+tempo 120
+instruments Boutique SH-01A 
+C4EG- C4EG- C4EG .
+B3DG- B3DG- B3DG .
+C4EA- C4EA- C4EA .
+C4FA- C4FA- C4FA .
+
+instruments NTS-1 digital kit 1 SOUND
+C1 E G C E G C E G C E G
+G1 B D G B D G B D G B D
+A1 E C A E C A E C A E C 
+F1 A C F A C F A C F A C 
