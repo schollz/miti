@@ -111,9 +111,10 @@ legato <1-100>
 ## To Do
 
 - [x] Add legato control `legato: 90`
+- [x] Hot-reload file
+- [ ] in midi, create a channel for each instrument
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
 - [ ] Understand chords `Bmin Gmaj`
-- [ ] Hot-reload file
 
 ## License 
 
