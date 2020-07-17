@@ -1,8 +1,6 @@
 package sequencer
 
 import (
-	"encoding/json"
-	"fmt"
 	"testing"
 	"time"
 
@@ -36,11 +34,10 @@ func TestParse(t *testing.T) {
  instruments op-1
  DF#A `
 
-	sections, err := Parse(config)
-	assert.Nil(t, err)
-	b, _ := json.MarshalIndent(sections, "", " ")
-	fmt.Println(string(b))
 	s := New()
+	s.UpdateTempo(120)
+	err := s.Parse(config)
+	assert.Nil(t, err)
 	s.Start()
 	time.Sleep(12 * time.Second)
 	s.Stop()

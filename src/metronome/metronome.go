@@ -1,26 +1,26 @@
 package metronome
 
 import (
-	"math"
 	"time"
 
 	log "github.com/schollz/logger"
 )
 
 const PULSES_PER_QUARTER_NOTE = 24.0
+const QUARTER_NOTES_PER_MEASURE = 4.0
 
 type Metronome struct {
-	quarterNotePerMeasure         float64
-	tempo                         int
-	pulse, beat, measure, section float64
-	sections                      []float64
-	update                        chan bool
-	stop                          chan bool
-	on                            bool
-	stepemit                      func(int, int, int, int)
+	quarterNotePerMeasure float64
+	tempo                 int
+	pulse                 float64
+	sections              []float64
+	update                chan bool
+	stop                  chan bool
+	on                    bool
+	stepemit              func(int)
 }
 
-func New(stepemit func(int, int, int, int)) (m *Metronome) {
+func New(stepemit func(int)) (m *Metronome) {
 	m = new(Metronome)
 	m.tempo = 60
 	m.quarterNotePerMeasure = 4
@@ -37,13 +37,19 @@ func (m *Metronome) Start() {
 		return
 	}
 	m.on = true
+	m.pulse = -1
 	go func() {
 		ticker := time.NewTicker(time.Duration(1000000*60/m.tempo/PULSES_PER_QUARTER_NOTE) * time.Microsecond)
+		log.Tracef("ticker time: %+v", time.Duration(1000000*60/m.tempo/PULSES_PER_QUARTER_NOTE)*time.Microsecond)
 
 		for {
 			select {
 			case <-ticker.C:
-				go m.Step()
+				m.pulse++
+				if m.pulse == PULSES_PER_QUARTER_NOTE*QUARTER_NOTES_PER_MEASURE {
+					m.pulse = 0
+				}
+				m.stepemit(int(m.pulse))
 			case <-m.update:
 				ticker.Stop()
 				ticker = time.NewTicker(time.Duration(1000000*60/m.tempo/PULSES_PER_QUARTER_NOTE) * time.Microsecond)
@@ -58,25 +64,6 @@ func (m *Metronome) Start() {
 	return
 }
 
-func (m *Metronome) Step() {
-	m.pulse++
-	if m.pulse == PULSES_PER_QUARTER_NOTE {
-		m.pulse = 0
-		m.beat++
-		if m.beat == m.quarterNotePerMeasure {
-			m.beat = 0
-			m.measure++
-		}
-		if m.measure == m.sections[int(m.section)] {
-			m.section++
-			m.section = math.Mod(m.section, float64(len(m.sections)))
-			m.measure = 0
-		}
-		log.Trace(m.section, m.measure, m.beat)
-	}
-	m.stepemit(int(m.section), int(m.measure), int(m.beat), int(m.pulse))
-}
-
 func (m *Metronome) Stop() {
 	m.stop <- true
 }
@@ -86,5 +73,7 @@ func (m *Metronome) UpdateTempo(tempo int) {
 		return
 	}
 	m.tempo = tempo
-	m.update <- true
+	if m.on {
+		m.update <- true
+	}
 }

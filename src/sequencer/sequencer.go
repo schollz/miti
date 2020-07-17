@@ -8,17 +8,19 @@ import (
 	"github.com/schollz/midi-sequencer/src/music"
 )
 
-const PULSES_PER_QUARTER_NOTE = 24.0
-const QUARTERNOTES_PER_MEASURE = 4.0
+const QUARTERNOTES_PER_MEASURE = 4
 
 type Sequencer struct {
 	metronome *metronome.Metronome
 	Sections  []Section
+
+	measure, section int
 }
 
 type Section struct {
-	Name  string
-	Parts []Part
+	Name        string
+	Parts       []Part
+	NumMeasures int
 }
 
 type Part struct {
@@ -38,6 +40,8 @@ func New() (s *Sequencer) {
 }
 
 func (s *Sequencer) Start() {
+	s.measure = -1
+	s.section = 0
 	s.metronome.Start()
 }
 
@@ -49,16 +53,34 @@ func (s *Sequencer) UpdateTempo(tempo int) {
 	s.metronome.UpdateTempo(tempo)
 }
 
-func (s *Sequencer) Emit(section int, measure int, beat int, pulse int) {
-	log.Trace(section, measure, beat, beat*int(PULSES_PER_QUARTER_NOTE)+pulse)
+func (s *Sequencer) Emit(pulse int) {
+	if pulse == 0 && len(s.Sections) > 0 {
+		s.measure++
+		if s.measure == s.Sections[s.section].NumMeasures {
+			s.section++
+			s.section = s.section % len(s.Sections)
+			s.measure = 0
+		}
+		log.Trace(s.section, s.measure, pulse)
+	}
+
+	// check for notes to emit
+	for _, part := range s.Sections[s.section].Parts {
+		measure := part.Measures[s.measure%len(part.Measures)]
+		if e, ok := measure.Emit[pulse]; ok {
+			// emit
+			log.Tracef("[%s] emit %+v", strings.Join(part.Instruments, ", "), e)
+		}
+	}
 }
 
-func Parse(s string) (sections []Section, err error) {
+func (s *Sequencer) Parse(data string) (err error) {
 	isPart := false
+	s.Sections = []Section{}
 
 	var section Section
 	var part Part
-	for _, line := range strings.Split(s, "\n") {
+	for _, line := range strings.Split(data, "\n") {
 		line = strings.TrimSpace(line)
 		log.Debug(line)
 		if strings.HasPrefix(line, "section") {
@@ -66,7 +88,7 @@ func Parse(s string) (sections []Section, err error) {
 				section.Parts = append(section.Parts, part)
 			}
 			if isPart {
-				sections = append(sections, section)
+				s.Sections = append(s.Sections, section)
 			}
 			section = Section{Name: line}
 			isPart = false
@@ -77,7 +99,11 @@ func Parse(s string) (sections []Section, err error) {
 			isPart = true
 			line = strings.TrimPrefix(line, "instruments")
 			line = strings.TrimPrefix(line, "instrument")
-			part = Part{Instruments: strings.Split(line, ",")}
+			instruments := strings.Split(line, ",")
+			for i := range instruments {
+				instruments[i] = strings.TrimSpace(instruments[i])
+			}
+			part = Part{Instruments: instruments}
 		} else if len(line) > 0 {
 			measure := Measure{Emit: make(map[int][]music.Chord)}
 			fs := strings.Fields(line)
@@ -98,8 +124,8 @@ func Parse(s string) (sections []Section, err error) {
 					return
 				}
 				measure.Chords = append(measure.Chords, music.Chord{Notes: notes})
-				startPulse := float64(i) / float64(len(fs)) * (QUARTERNOTES_PER_MEASURE*PULSES_PER_QUARTER_NOTE - 1)
-				endPulse := startPulse + 1/float64(len(fs))*(QUARTERNOTES_PER_MEASURE*PULSES_PER_QUARTER_NOTE-1)
+				startPulse := float64(i) / float64(len(fs)) * (QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE - 1)
+				endPulse := startPulse + 1/float64(len(fs))*(QUARTERNOTES_PER_MEASURE*metronome.PULSES_PER_QUARTER_NOTE-1)
 				// TODO: add in legato
 				if _, ok := measure.Emit[int(startPulse)]; !ok {
 					measure.Emit[int(startPulse)] = []music.Chord{}
