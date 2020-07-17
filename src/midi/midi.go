@@ -13,7 +13,7 @@ var outputStreams map[string]*portmidi.Stream
 var encounteredNotes map[int64]struct{}
 var inited bool
 
-func Init() (err error) {
+func Init() (devices []string, err error) {
 	defer func() {
 		if err == nil {
 			inited = true
@@ -31,6 +31,7 @@ func Init() (err error) {
 		di := portmidi.Info(portmidi.DeviceID(i))
 		log.Debugf("device %d: '%s', i/o: %v/%v", i, di.Name, di.IsInputAvailable, di.IsOutputAvailable)
 		if di.IsOutputAvailable && !strings.Contains(di.Name, "Microsoft") {
+			devices = append(devices, di.Name)
 			outputStreams[di.Name], err = portmidi.NewOutputStream(portmidi.DeviceID(i), 1024, 0)
 			if err != nil {
 				err = fmt.Errorf("could not get output from: '%s'", di.Name)

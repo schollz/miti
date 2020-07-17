@@ -70,7 +70,7 @@ func (m *Metronome) Stop() {
 }
 
 func (m *Metronome) UpdateTempo(tempo int) {
-	if tempo <= 0 {
+	if tempo <= 0 || tempo == m.tempo {
 		return
 	}
 	m.tempo = tempo

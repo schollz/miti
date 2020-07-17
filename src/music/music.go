@@ -12,6 +12,18 @@ type Chord struct {
 	On    bool
 }
 
+func (c Chord) String() string {
+	s := ""
+	for i, n := range c.Notes {
+		if i == 0 {
+			s += fmt.Sprintf("%s%d", n.Name, n.Octave)
+		} else {
+			s += n.Name
+		}
+	}
+	return s
+}
+
 type Note struct {
 	Name   string
 	MIDI   int

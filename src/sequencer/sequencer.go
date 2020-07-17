@@ -1,6 +1,8 @@
 package sequencer
 
 import (
+	"fmt"
+	"strconv"
 	"strings"
 
 	log "github.com/schollz/logger"
@@ -22,6 +24,7 @@ type Section struct {
 	Name        string
 	Parts       []Part
 	NumMeasures int
+	Tempo       int
 }
 
 // Part contains the list of instruments and their measures
@@ -47,6 +50,7 @@ func New(midiPlay func(string, music.Chord)) (s *Sequencer) {
 func (s *Sequencer) Start() {
 	s.measure = -1
 	s.section = 0
+	s.UpdateTempo(s.Sections[s.section].Tempo)
 	s.metronome.Start()
 }
 
@@ -69,9 +73,15 @@ func (s *Sequencer) Emit(pulse int) {
 			s.section++
 			s.section = s.section % len(s.Sections)
 			s.measure = 0
+
+			// update tempo for new section
+			if s.Sections[s.section].Tempo != 0 {
+				s.UpdateTempo(s.Sections[s.section].Tempo)
+			}
 		}
 		log.Trace(s.section, s.measure, pulse)
 	}
+
 	// check for notes to emit
 	for _, part := range s.Sections[s.section].Parts {
 		measure := part.Measures[s.measure%len(part.Measures)]
@@ -119,6 +129,15 @@ func (s *Sequencer) Parse(data string) (err error) {
 			}
 			part = Part{}
 			section = Section{Name: line}
+		} else if strings.HasPrefix(line, "tempo") {
+			fs := strings.Fields(line)
+			if len(fs) > 0 {
+				section.Tempo, err = strconv.Atoi(fs[1])
+				if err != nil {
+					err = fmt.Errorf("problem parsing tempo: %s", fs[1])
+					return
+				}
+			}
 		} else if strings.HasPrefix(line, "instruments") {
 			if len(part.Instruments) > 0 {
 				section.Parts = append(section.Parts, part)
