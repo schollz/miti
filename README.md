@@ -1,6 +1,7 @@
 # idim
 
 *idim* is for *interfacing different instruments' midi*. It provides surprisingly simple sequencing for synthesizers or other instruments.
+You can control your synthesizers from your favorite text editor.
 
 ## Install
 
