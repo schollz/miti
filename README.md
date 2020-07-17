@@ -138,6 +138,11 @@ C E G
 
 will play the C, E, G arpeggio on both instruments 1 and 2.
 
+## Other similar work
+
+- [textbeat](https://github.com/flipcoder/textbeat) is a text-based musical notation to do complex sequences using a columnated workflow.
+- [helio-workstation](https://github.com/helio-fm/helio-workstation) is a simplified GUI based sequencer.
+- [lilypond](http://lilypond.org/) is a GUI based sequencer and musical notation software.
 
 
 ## To Do
