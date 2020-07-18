@@ -3,13 +3,22 @@ package midi
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	log "github.com/schollz/logger"
 	"github.com/schollz/miti/src/music"
 	"github.com/schollz/portmidi"
 )
 
-var outputChannels map[string]chan music.Chord
+// outputChannelsMap keeps track of channels
+var outputChannelsMap map[string]int
+
+// outputChannels allows global access to channels
+var outputChannels []chan music.Chord
+
+// channelLock is nessecary for Linux systems to
+// only transmit one thing at a time
+var channelLock sync.Mutex
 var inited bool
 
 func Init() (devices []string, err error) {
@@ -24,32 +33,36 @@ func Init() (devices []string, err error) {
 	}
 	log.Debugf("found %d devices", portmidi.CountDevices())
 
-	outputChannels = make(map[string]chan music.Chord)
+	outputChannelsMap = make(map[string]int)
 	for i := 0; i < portmidi.CountDevices(); i++ {
 		di := portmidi.Info(portmidi.DeviceID(i))
 		log.Debugf("device %d: '%s', i/o: %v/%v", i, di.Name, di.IsInputAvailable, di.IsOutputAvailable)
 		if di.IsOutputAvailable && !strings.Contains(di.Name, "Wavetable Synth") {
 			devices = append(devices, di.Name)
-			var outStream *portmidi.Stream
-			outStream, err = portmidi.NewOutputStream(portmidi.DeviceID(i), 0, 0)
-			if err != nil {
-				err = fmt.Errorf("could not open stream to %s: %s", di.Name, err.Error())
-				return
-			}
+
 			// create a buffered channel for each instrument
-			outputChannels[di.Name] = make(chan music.Chord, 1000)
+			outputChannelsMap[di.Name] = len(outputChannels)
+			outputChannels = append(outputChannels, make(chan music.Chord, 1000))
 			// create a go-routine for each instrument
-			go func(instrument string, outputStream *portmidi.Stream) {
+			go func(instrument string, deviceID int, channelNum int) {
 				defer func() {
 					if r := recover(); r != nil {
 						log.Debug("recovered panic")
 					}
 				}()
+				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, 0)
+				if err != nil {
+					panic(err)
+				}
+				log.Debugf("[%s] opened stream", instrument)
 				midis := make([]int64, 100)
 				velocities := make([]int64, 100)
 				notesOn := make(map[int64]bool)
 				for {
-					chord := <-outputChannels[instrument]
+					log.Tracef("[%s] waiting for chord", instrument)
+					chord := <-outputChannels[channelNum]
+					log.Tracef("[%s] got chord: %+v", instrument, chord)
+
 					// special things
 					// midi note -1 turns off all on notes
 					// midi note -2 turns off all on notes and shuts down
@@ -57,41 +70,50 @@ func Init() (devices []string, err error) {
 						// turn off all notes
 						for note := range notesOn {
 							if notesOn[note] {
+								channelLock.Lock()
 								outputStream.WriteShort(0x80, note, 0)
+								channelLock.Unlock()
 							}
 						}
 					}
 					if chord.Notes[0].MIDI == -2 {
 						// shutdown
-						outputStream.Abort()
+						channelLock.Lock()
+						outputStream.Close()
+						channelLock.Unlock()
 						return
 					}
-					lenChordNotes := 0
-					for i, n := range chord.Notes {
-						midis[i] = int64(n.MIDI)
-						if onState, ok := notesOn[midis[i]]; ok {
+					j := 0
+					for _, n := range chord.Notes {
+						midis[j] = int64(n.MIDI)
+						if onState, ok := notesOn[midis[j]]; ok {
 							if onState && chord.On {
 								// this note already has this state
+								log.Tracef("already played")
 								continue
 							}
 						}
-						notesOn[midis[i]] = chord.On
-						velocities[i] = 100
-						lenChordNotes++
+						notesOn[midis[j]] = chord.On
+						velocities[j] = 100
+						j++
 					}
-					if lenChordNotes == 0 {
+					if j == 0 {
 						continue
 					}
+					channelLock.Lock()
 					if chord.On {
-						err = outputStream.WriteShorts(0x90, midis[:lenChordNotes], velocities[:lenChordNotes])
+						err = outputStream.WriteShorts(0x90, midis[:j], velocities[:j])
 					} else {
-						err = outputStream.WriteShorts(0x80, midis[:lenChordNotes], velocities[:lenChordNotes])
+						err = outputStream.WriteShorts(0x80, midis[:j], velocities[:j])
 					}
+					channelLock.Unlock()
 					if err != nil {
-						log.Error(err)
+						log.Errorf("[%s]: %s, could not send: %+v", instrument, err.Error(), midis[:j])
+					} else {
+						log.Tracef("[%s]: wrote %+v", instrument, midis[:j])
 					}
 				}
-			}(di.Name, outStream)
+			}(di.Name, i, len(outputChannels)-1)
 			if err != nil {
 				err = fmt.Errorf("could not get output from: '%s'", di.Name)
 				return
@@ -118,7 +140,6 @@ func NotesOff() (err error) {
 }
 
 func Midi(msg string, chord music.Chord) (err error) {
-	log.Trace("got emit")
 	if !inited {
 		err = fmt.Errorf("not initialized")
 		return
@@ -126,11 +147,14 @@ func Midi(msg string, chord music.Chord) (err error) {
 	if len(chord.Notes) == 0 {
 		return
 	}
-	if _, ok := outputChannels[msg]; !ok {
+	channelID, ok := outputChannelsMap[msg]
+	if !ok {
 		err = fmt.Errorf("no such device: %s", msg)
 		return
 	}
-	outputChannels[msg] <- chord
+	log.Trace("got emit")
+	outputChannels[channelID] <- chord
+	log.Trace("emitted")
 	// log.Trace("building midi")
 	// midis := make([]int64, len(chord.Notes))
 	// velocities := make([]int64, len(chord.Notes))
