@@ -166,6 +166,7 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] in midi, accept -2 to turn off all notes and shut down
 - [x] Add `-` suffix for adding sustain
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
+- [ ] Easily identify instruments with partial matches (if contains)
 
 ## Won't do
 
