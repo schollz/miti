@@ -16,6 +16,11 @@
 
 <p align="center"><a href="https://www.youtube.com/watch?v=Mp1-8MSVVkA"><img src="https://user-images.githubusercontent.com/6550035/87845036-1f00d380-c878-11ea-9fbc-9054a8e979f8.PNG" alt="Demo of playing" width=80%></a></p>
 
+## Known issues
+
+- Jitter. With two instruments emitting at 240 BPM the jitter averages ~5 ms, but ranges between 0 and 20ms (measured via incoming audio), which is tolerable. Unfortunately, with three instruments there are jitter spikes of 100 ms :( Looking into the cause.
+- Different instrument names between Linux / Windows (this is a quality of life thing, but it would help to be consistent)
+
 ## Install
 
 First install `portmidi`, following [these directions](https://schollz.com/blog/portmidi/).
@@ -158,6 +163,11 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [textbeat](https://github.com/flipcoder/textbeat) is a text-based musical notation to do complex sequences using a columnated workflow.
 - [helio-workstation](https://github.com/helio-fm/helio-workstation) is a simplified GUI based sequencer.
 - [lilypond](http://lilypond.org/) is a GUI based sequencer and musical notation software.
+- [foxdot](https://foxdot.org/) is a Python + SuperCollider music environment.
+- [Sonic Pi](https://sonic-pi.net/) is a SuperCollider live coding environment.
+- [Pure Data](https://puredata.info/) is a GUI program that enables music synthesis.
+- [Chuck](https://chuck.cs.princeton.edu/) is a music programming lanuage.
+
 
 
 ## To Do
@@ -171,8 +181,9 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] Add `-` suffix for adding sustain
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
 - [ ] Easily identify instruments with partial matches (if contains)
+- [ ] Find source of spurious jitter
 
-## Won't do
+### Won't to do
 
 - Use chords instead of notes. It turns out note clusters are more expressive in many cases. For example writing "Gmin/D" or "Gmin2inv" both take up more space than just writing "DGBb".
 

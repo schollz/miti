@@ -1,7 +1,7 @@
 pattern a
 
-instruments NTS-1 digital kit 1 SOUND
-tempo 120
+instruments NTS-1 digital kit 1 SOUND, Boutique SH-01A
+tempo 240
 
-legato 50
-A1
+legato 1
+A4 A A A 
