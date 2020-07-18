@@ -1,6 +1,6 @@
-<img src="https://user-images.githubusercontent.com/6550035/87833417-a16ba200-c83c-11ea-8e37-467c97744512.png">
+<img src="https://user-images.githubusercontent.com/6550035/87839388-7f2f4f80-c84f-11ea-8e12-75641fb6d386.png">
 
-*miti* is . It provides surprisingly simple sequencing for synthesizers or other instruments.
+*miti* is a *musical instrument textual interface*. Basically, its MIDI but you can connect and control sounds in a very human way, using text. It provides surprisingly simple sequencing for synthesizers or other instruments.
 You can control your synthesizers from your favorite text editor.
 
 ## Install
