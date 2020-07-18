@@ -155,10 +155,12 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] in midi, each instrument keeps track of which notes are off
 - [x] in midi, accept -1 to turn off all notes 
 - [x] in midi, accept -2 to turn off all notes and shut down
-- [x] Add `*` suffix for adding sustain
+- [x] Add `-` suffix for adding sustain
 - [ ] Allow chaining patterns in different ways `chain: a a b b a a`
-- [ ] Understand chords `Bmin Gmaj`
 
+## Won't do
+
+- Use chords instead of notes. It turns out note clusters are more expressive in many cases. For example writing "Gmin/D" or "Gmin2inv" both take up more space than just writing "DGBb".
 
 
 ## License 
