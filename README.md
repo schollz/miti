@@ -4,6 +4,14 @@
 
 *miti* provides a program and musical notation that you can use to easily connect and control sounds in a very human way. It provides surprisingly simple sequencing for synthesizers or other instruments, namely control from  your favorite text editor.
 
+## Features
+
+- Control one/many MIDI devices simultaneously
+- Sequence single notes or chords, at any subdivision
+- Low latency (typically ~2 ms between metronome pulse and emitting note)
+- Edit sequence in realtime
+- Write sequences in human-readable text
+
 ## Install
 
 First install `portmidi`, following [these directions](https://schollz.com/blog/portmidi/).
@@ -13,6 +21,7 @@ Next install [Go](https://golang.org/dl/) and then in a terminal:
 	> go install github.com/schollz/miti
 
 That's it! `miti` is now available from the command-line.
+
 
 ## Usage
 

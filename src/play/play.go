@@ -8,10 +8,10 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/olekukonko/tablewriter"
+	log "github.com/schollz/logger"
 	"github.com/schollz/miti/src/midi"
 	"github.com/schollz/miti/src/music"
 	"github.com/schollz/miti/src/sequencer"
-	log "github.com/schollz/logger"
 )
 
 func PrintDevices() (err error) {
@@ -64,7 +64,7 @@ func Play(mitiFile string) (err error) {
 		log.Tracef("[%s] forwarding emit", s)
 		errMidi := midi.Midi(s, c)
 		if errMidi != nil {
-			log.Error(errMidi)
+			log.Debug(errMidi)
 		}
 		// if log.GetLevel() == "info" {
 		// 	tm.MoveCursor(1, 1)
