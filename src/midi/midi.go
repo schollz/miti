@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/schollz/miti/src/music"
 	log "github.com/schollz/logger"
+	"github.com/schollz/miti/src/music"
 	"github.com/schollz/portmidi"
 )
 
@@ -31,13 +31,13 @@ func Init() (devices []string, err error) {
 		if di.IsOutputAvailable && !strings.Contains(di.Name, "Wavetable Synth") {
 			devices = append(devices, di.Name)
 			var outStream *portmidi.Stream
-			outStream, err = portmidi.NewOutputStream(portmidi.DeviceID(i), 4096, 0)
+			outStream, err = portmidi.NewOutputStream(portmidi.DeviceID(i), 0, 0)
 			if err != nil {
 				err = fmt.Errorf("could not open stream to %s: %s", di.Name, err.Error())
 				return
 			}
 			// create a buffered channel for each instrument
-			outputChannels[di.Name] = make(chan music.Chord, 100)
+			outputChannels[di.Name] = make(chan music.Chord, 1000)
 			// create a go-routine for each instrument
 			go func(instrument string, outputStream *portmidi.Stream) {
 				defer func() {
