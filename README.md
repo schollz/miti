@@ -12,6 +12,10 @@
 - Edit sequence in realtime
 - Write sequences in human-readable text
 
+## Demo 
+
+<p align="center"><a href="https://www.youtube.com/watch?v=_kFUhAg7LOY"><img src="https://img.youtube.com/vi/_kFUhAg7LOY/0.jpg" alt="Demo of playing" width=80%></a></p>
+
 ## Install
 
 First install `portmidi`, following [these directions](https://schollz.com/blog/portmidi/).
