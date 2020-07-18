@@ -16,6 +16,7 @@ import (
 func TestParse(t *testing.T) {
 	log.SetLevel("trace")
 	config := `
+# this is a comment
 chain a a a a b
 tempo 240 
 pattern a

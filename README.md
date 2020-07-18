@@ -74,8 +74,7 @@ CEG
 FAC
 ```
 
-The `pattern a` designates the pattern name, "a". This pattern has a single instrument, `<instrument1>` 
-(normally you will fill in the name of an instrument, like `NTS-1 digital kit 1 SOUND` in the example above). 
+The `pattern a` designates the pattern name, "a". This pattern has a single instrument, `<instrument1>`. The instrument name must be contained in the official MIDI instrument name, case insensitive. For example, "nts-1" is a viable name if the MIDI instrument is "NTS-1 digital kit 1 SOUND."
 
 Each line under `instruments` designates a different measure. This is where you put notes. Notes without spaces are considered a chord and will be played simultaneously. The first measure plays C, E, and G (C major) and the second measure plays F, A and C (F major). This pattern will repeat indefinitely when played.
 
@@ -110,6 +109,16 @@ instruments <instrument1>
 ### Other specifications
 
 Here are other keywords you can use to modulate the song in the `.miti` file:
+
+
+#### Adding comments
+
+You can add in comments into the `.miti` file by putting a `#` in the beginning of the line:
+
+```
+# this is a comment
+pattern a 
+```
 
 #### Chain patterns
 
@@ -195,6 +204,7 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] Add `-` suffix for adding sustain
 - [x] Easily identify instruments with partial matches (if contains)
 - [x] Allow chaining patterns in different ways `chain: a a b b a a`
+- [x] allow comments
 - [ ] Find source of spurious jitter
 
 ### Won't to do

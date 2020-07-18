@@ -161,6 +161,9 @@ func (s *Sequencer) Parse(fname string) (err error) {
 			}
 			part = Part{}
 			section = Section{Name: strings.TrimSpace(strings.TrimPrefix(line, "pattern")), Tempo: section.Tempo}
+		} else if strings.HasPrefix(line, "#") {
+			// this is a comment
+			continue
 		} else if strings.HasPrefix(line, "legato") {
 			fs := strings.Fields(line)
 			if len(fs) > 0 {
