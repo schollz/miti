@@ -111,6 +111,20 @@ instruments <instrument1>
 
 Here are other keywords you can use to modulate the song in the `.miti` file:
 
+#### Chain patterns
+
+If you have multiple patterns you can chain them together in any order using `chain`. The order will repeat once it gets to the end. For example, this repeats the first pattern followed by 5 of the second pattern:
+
+```
+chain a b b b b b
+
+pattern a
+CEG
+
+pattern b 
+DFA
+```
+
 #### Specific notes
 
 By default, the note played will be the note closest to the previous. If you want to specify the exact note you can add a suffix to include the octave. For example, instead of writing `CEG` you could instead write `C3E4G5` which will span the chord over three octaves.
@@ -180,7 +194,7 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] in midi, accept -2 to turn off all notes and shut down
 - [x] Add `-` suffix for adding sustain
 - [x] Easily identify instruments with partial matches (if contains)
-- [ ] Allow chaining patterns in different ways `chain: a a b b a a`
+- [x] Allow chaining patterns in different ways `chain: a a b b a a`
 - [ ] Find source of spurious jitter
 
 ### Won't to do

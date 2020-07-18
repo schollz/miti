@@ -8,9 +8,9 @@ import (
 	"strings"
 	"sync"
 
+	log "github.com/schollz/logger"
 	"github.com/schollz/miti/src/metronome"
 	"github.com/schollz/miti/src/music"
-	log "github.com/schollz/logger"
 )
 
 const QUARTERNOTES_PER_MEASURE = 4
@@ -18,6 +18,10 @@ const QUARTERNOTES_PER_MEASURE = 4
 type Sequencer struct {
 	metronome *metronome.Metronome
 	Sections  []Section
+
+	chain     []string
+	chainID   map[string]int
+	sectionID int
 
 	measure, section int
 	midiPlay         func(string, music.Chord)
@@ -49,13 +53,16 @@ func New(midiPlay func(string, music.Chord)) (s *Sequencer) {
 	s = new(Sequencer)
 	s.metronome = metronome.New(s.Emit)
 	s.midiPlay = midiPlay
+	s.chainID = make(map[string]int)
 	return
 }
 
 func (s *Sequencer) Start() {
 	s.measure = -1
 	s.section = 0
-	s.UpdateTempo(s.Sections[s.section].Tempo)
+	if len(s.Sections) > 0 {
+		s.UpdateTempo(s.Sections[s.chainID[s.chain[s.section]]].Tempo)
+	}
 	s.metronome.Start()
 }
 
@@ -76,21 +83,22 @@ func (s *Sequencer) Emit(pulse int) {
 
 	if pulse == 0 {
 		s.measure++
-		if s.measure == s.Sections[s.section].NumMeasures {
+		if s.measure == s.Sections[s.sectionID].NumMeasures {
 			s.section++
-			s.section = s.section % len(s.Sections)
+			s.section = s.section % len(s.chain)
+			s.sectionID = s.chainID[s.chain[s.section]]
 			s.measure = 0
 
 			// update tempo for new section
-			if s.Sections[s.section].Tempo != 0 {
-				s.UpdateTempo(s.Sections[s.section].Tempo)
+			if s.Sections[s.sectionID].Tempo != 0 {
+				s.UpdateTempo(s.Sections[s.sectionID].Tempo)
 			}
 		}
 		log.Trace(s.section, s.measure, pulse)
 	}
 
 	// check for notes to emit
-	for _, part := range s.Sections[s.section].Parts {
+	for _, part := range s.Sections[s.sectionID].Parts {
 		if len(part.Measures) == 0 {
 			continue
 		}
@@ -130,6 +138,7 @@ func (s *Sequencer) Parse(fname string) (err error) {
 	data := string(b)
 
 	newSections := []Section{}
+	newChain := []string{}
 
 	var section Section
 	var part Part
@@ -151,7 +160,7 @@ func (s *Sequencer) Parse(fname string) (err error) {
 				newSections = append(newSections, section)
 			}
 			part = Part{}
-			section = Section{Name: line, Tempo: section.Tempo}
+			section = Section{Name: strings.TrimSpace(strings.TrimPrefix(line, "pattern")), Tempo: section.Tempo}
 		} else if strings.HasPrefix(line, "legato") {
 			fs := strings.Fields(line)
 			if len(fs) > 0 {
@@ -166,6 +175,11 @@ func (s *Sequencer) Parse(fname string) (err error) {
 				if part.Legato > 100 {
 					part.Legato = 100
 				}
+			}
+		} else if strings.HasPrefix(line, "chain") {
+			fs := strings.Fields(line)
+			if len(fs) > 1 {
+				newChain = fs[1:]
 			}
 		} else if strings.HasPrefix(line, "tempo") {
 			fs := strings.Fields(line)
@@ -264,7 +278,27 @@ func (s *Sequencer) Parse(fname string) (err error) {
 		newSections = append(newSections, section)
 	}
 	if len(newSections) > 0 {
+		// validate chain / section names
+		newChainMap := make(map[string]int)
+		makeChain := len(newChain) == 0
+		for i, section := range newSections {
+			newChainMap[section.Name] = i
+			if makeChain {
+				newChain = append(newChain, section.Name)
+			}
+		}
+		for _, chain := range newChain {
+			if _, ok := newChainMap[chain]; !ok {
+				err = fmt.Errorf("no such chain: %s", chain)
+				return
+			}
+		}
 		s.Lock()
+		s.chainID = make(map[string]int)
+		for k := range newChainMap {
+			s.chainID[k] = newChainMap[k]
+		}
+		s.chain = newChain
 		s.Sections = newSections
 		s.Unlock()
 	} else {

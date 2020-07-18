@@ -2,6 +2,8 @@ package sequencer
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -12,24 +14,29 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	config := `section a
+	log.SetLevel("trace")
+	config := `
+chain a a a a b
+tempo 240 
+pattern a
 
- instruments op-1, sh01a
- CEG
- ACE
- 
- instruments nts-1
- C E
- 
- section b 
+ instruments op-1
+ CEG 
+
+ pattern b 
  
  instruments op-1
- DF#A `
+ DF#A 
+ `
+	ioutil.WriteFile("temp.miti", []byte(config), 0644)
+	defer func() {
+		os.Remove("temp.miti")
+	}()
 
 	s := New(func(s string, c music.Chord) {
 		log.Tracef("%s %s", s, pretty.Sprint(c))
 	})
-	err := s.Parse(config)
+	err := s.Parse("temp.miti")
 	assert.Nil(t, err)
 	fmt.Printf(pretty.Sprint(s))
 	s.Start()
