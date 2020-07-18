@@ -13,6 +13,8 @@ import (
 // outputChannelsMap keeps track of channels
 var outputChannelsMap map[string]int
 
+var outputChannelsMapMatch map[string]int
+
 // outputChannels allows global access to channels
 var outputChannels []chan music.Chord
 
@@ -34,6 +36,7 @@ func Init() (devices []string, err error) {
 	log.Debugf("found %d devices", portmidi.CountDevices())
 
 	outputChannelsMap = make(map[string]int)
+	outputChannelsMapMatch = make(map[string]int)
 	for i := 0; i < portmidi.CountDevices(); i++ {
 		di := portmidi.Info(portmidi.DeviceID(i))
 		log.Debugf("device %d: '%s', i/o: %v/%v", i, di.Name, di.IsInputAvailable, di.IsOutputAvailable)
@@ -68,20 +71,19 @@ func Init() (devices []string, err error) {
 					// midi note -2 turns off all on notes and shuts down
 					if chord.Notes[0].MIDI < 0 {
 						// turn off all notes
+						channelLock.Lock()
 						for note := range notesOn {
 							if notesOn[note] {
-								channelLock.Lock()
 								outputStream.WriteShort(0x80, note, 0)
-								channelLock.Unlock()
 							}
 						}
-					}
-					if chord.Notes[0].MIDI == -2 {
-						// shutdown
-						channelLock.Lock()
-						outputStream.Close()
+						if chord.Notes[0].MIDI == -2 {
+							// shutdown
+							outputStream.Close()
+							channelLock.Unlock()
+							return
+						}
 						channelLock.Unlock()
-						return
 					}
 					j := 0
 					for _, n := range chord.Notes {
@@ -149,8 +151,21 @@ func Midi(msg string, chord music.Chord) (err error) {
 	}
 	channelID, ok := outputChannelsMap[msg]
 	if !ok {
-		err = fmt.Errorf("no such device: %s", msg)
-		return
+		channelID, ok = outputChannelsMapMatch[msg]
+		if !ok {
+			found := false
+			for m := range outputChannelsMap {
+				if strings.Contains(strings.ToLower(m), strings.ToLower(msg)) {
+					outputChannelsMapMatch[msg] = outputChannelsMap[m]
+					found = true
+					log.Infof("mapping '%s' -> '%s'", msg, m)
+				}
+			}
+			if !found {
+				err = fmt.Errorf("no such device: %s", msg)
+				return
+			}
+		}
 	}
 	log.Trace("got emit")
 	outputChannels[channelID] <- chord
