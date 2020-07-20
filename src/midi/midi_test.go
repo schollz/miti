@@ -2,6 +2,9 @@ package midi
 
 import (
 	"testing"
+	"time"
+
+	"github.com/schollz/miti/src/log"
 )
 
 func TestMIDI(t *testing.T) {
@@ -9,6 +12,24 @@ func TestMIDI(t *testing.T) {
 	if err != nil {
 		t.Errorf("err: %s", err.Error())
 	}
+}
+
+func TestIn(t *testing.T) {
+	log.SetLevel("trace")
+	var finished chan bool
+	events, err := ReadAll(finished)
+	if err != nil {
+		t.Errorf("err: %s", err.Error())
+	}
+	go func() {
+		for {
+			e := <-events
+			log.Debugf("e: %+v", e)
+		}
+	}()
+	time.Sleep(10 * time.Second)
+	finished <- true
+	time.Sleep(100 * time.Millisecond)
 }
 
 // func TestPlay(t *testing.T) {
