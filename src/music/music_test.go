@@ -13,3 +13,14 @@ func TestParseCluster(t *testing.T) {
 	}
 	fmt.Println(notes)
 }
+
+func TestMidiToNote(t *testing.T) {
+	note := MidiToNote(98)
+	if note.Name != "D" && note.Octave == 7 {
+		t.Errorf("got wrong note: %v", note)
+	}
+	note = MidiToNote(26)
+	if note.Name != "D" && note.Octave == 1 {
+		t.Errorf("got wrong note: %v", note)
+	}
+}

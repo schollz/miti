@@ -157,3 +157,35 @@ var allowedNotes = map[string]int{
 	"B#": 26,
 	"Bb": 34,
 }
+
+var c0notes = map[string]int{
+	"C":  24,
+	"Db": 25,
+	"D":  26,
+	"Eb": 27,
+	"E":  28,
+	"F":  29,
+	"Gb": 30,
+	"G":  31,
+	"Ab": 32,
+	"A":  33,
+	"Bb": 34,
+	"B":  35,
+}
+var midiToNote map[int]Note
+
+func init() {
+	midiToNote = make(map[int]Note)
+	for octave := 1; octave < 8; octave++ {
+		for note := range c0notes {
+			midiToNote[c0notes[note]+12*(octave-1)] = Note{Name: note, Octave: octave, MIDI: c0notes[note] + 12*(octave-1)}
+		}
+	}
+}
+
+func MidiToNote(midi int) Note {
+	if _, ok := midiToNote[midi]; !ok {
+		return Note{}
+	}
+	return midiToNote[midi]
+}

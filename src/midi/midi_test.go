@@ -16,7 +16,7 @@ func TestMIDI(t *testing.T) {
 
 func TestIn(t *testing.T) {
 	log.SetLevel("trace")
-	var finished chan bool
+	finished := make(chan bool)
 	events, err := ReadAll(finished)
 	if err != nil {
 		t.Errorf("err: %s", err.Error())
@@ -27,8 +27,10 @@ func TestIn(t *testing.T) {
 			log.Debugf("e: %+v", e)
 		}
 	}()
-	time.Sleep(10 * time.Second)
+	time.Sleep(2 * time.Second)
+	log.Debug("sending finish")
 	finished <- true
+	log.Debug("sent")
 	time.Sleep(100 * time.Millisecond)
 }
 
