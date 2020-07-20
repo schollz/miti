@@ -5,14 +5,16 @@ import (
 
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/play"
+	"github.com/schollz/miti/src/record"
 )
 
-var flagDebug, flagTrace bool
+var flagDebug, flagTrace, flagRecord bool
 var flagFile string
 
 func init() {
 	flag.BoolVar(&flagDebug, "debug", false, "debug")
 	flag.BoolVar(&flagTrace, "trace", false, "trace")
+	flag.BoolVar(&flagRecord, "record", false, "record input")
 	flag.StringVar(&flagFile, "file", "", "file to load")
 }
 
@@ -26,7 +28,12 @@ func main() {
 		log.SetLevel("info")
 	}
 
-	err := play.Play(flagFile)
+	var err error
+	if flagRecord {
+		err = record.Record()
+	} else {
+		err = play.Play(flagFile)
+	}
 	if err != nil {
 		log.Error(err)
 	}
