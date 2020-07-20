@@ -122,7 +122,8 @@ func hotReloadFile(seq *sequencer.Sequencer, fname string, watcherDone chan bool
 			var statinfo os.FileInfo
 			statinfo, err = os.Stat(fname)
 			if err != nil {
-				return
+				log.Debug(err)
+				continue
 			}
 			currentInfo := fmt.Sprintf("%s%d", statinfo.ModTime(), statinfo.Size())
 			if lastInfo != "" && lastInfo != currentInfo {
