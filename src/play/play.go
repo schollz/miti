@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/olekukonko/tablewriter"
 	log "github.com/schollz/logger"
 	"github.com/schollz/miti/src/midi"
@@ -112,50 +111,31 @@ func Play(mitiFile string) (err error) {
 }
 
 func hotReloadFile(seq *sequencer.Sequencer, fname string, watcherDone chan bool) (err error) {
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		return
-	}
-	defer watcher.Close()
-
-	lastEvent := time.Now()
-	done := make(chan bool)
-	go func() {
-		for {
-			select {
-			case _ = <-watcherDone:
-				done <- true
+	ticker := time.NewTicker(700 * time.Millisecond)
+	lastInfo := ""
+	for {
+		select {
+		case <-watcherDone:
+			return
+		case t := <-ticker.C:
+			log.Tracef("checking file at %s", t)
+			var statinfo os.FileInfo
+			statinfo, err = os.Stat(fname)
+			if err != nil {
 				return
-			case event, ok := <-watcher.Events:
-				if !ok {
-					return
-				}
-				log.Debugf("event: %+v", event)
-				if event.Op&fsnotify.Write == fsnotify.Write && time.Since(lastEvent).Seconds() > 1 {
-					lastEvent = time.Now()
-					log.Infof("reloading: %+v", event.Name)
-					time.Sleep(100 * time.Millisecond)
-					err = seq.Parse(fname)
-					if err != nil {
-						log.Warnf("problem hot-reloading %s: %s", fname, err.Error())
-					} else {
-						midi.NotesOff()
-					}
-				}
-			case err, ok := <-watcher.Errors:
-				if !ok {
-					return
-				}
-				log.Error(err)
 			}
+			currentInfo := fmt.Sprintf("%s%d", statinfo.ModTime(), statinfo.Size())
+			if lastInfo != "" && lastInfo != currentInfo {
+				err = seq.Parse(fname)
+				if err != nil {
+					log.Warnf("problem hot-reloading %s: %s", fname, err.Error())
+				} else {
+					midi.NotesOff()
+				}
+			}
+			lastInfo = currentInfo
 		}
-	}()
 
-	err = watcher.Add(fname)
-	if err != nil {
-		return
 	}
-	<-done
-	log.Debug("watcher done")
 	return
 }
