@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	log "github.com/schollz/logger"
+	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/play"
 )
 

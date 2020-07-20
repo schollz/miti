@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/kr/pretty"
-	log "github.com/schollz/logger"
+	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/music"
 )
 

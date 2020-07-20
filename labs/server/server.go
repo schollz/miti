@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	log "github.com/schollz/logger"
+	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/sequencer"
 )
 

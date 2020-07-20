@@ -3,7 +3,7 @@ package metronome
 import (
 	"time"
 
-	log "github.com/schollz/logger"
+	"github.com/schollz/miti/src/log"
 )
 
 const PULSES_PER_QUARTER_NOTE = 24.0

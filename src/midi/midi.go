@@ -5,9 +5,9 @@ import (
 	"strings"
 	"sync"
 
-	log "github.com/schollz/logger"
+	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/music"
-	"github.com/schollz/portmidi"
+	"github.com/schollz/miti/src/portmidi"
 )
 
 // outputChannelsMap keeps track of channels
