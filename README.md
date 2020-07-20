@@ -19,7 +19,6 @@
 ## Known issues
 
 - Jitter. With two instruments emitting at 240 BPM the jitter averages ~5 ms, but ranges between 0 and 20ms (measured via incoming audio), which is tolerable. Unfortunately, with three instruments there are jitter spikes of 100 ms :( Looking into the cause.
-- Different instrument names between Linux / Windows (this is a quality of life thing, but it would help to be consistent)
 
 ## Install
 
