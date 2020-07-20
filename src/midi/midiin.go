@@ -45,7 +45,6 @@ func ReadAll(finished chan bool) (events chan Event, err error) {
 					defer in.Close()
 
 					ch := in.Listen()
-
 					for {
 						select {
 						case event := <-ch:
