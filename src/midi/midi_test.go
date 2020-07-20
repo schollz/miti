@@ -2,13 +2,13 @@ package midi
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestMIDI(t *testing.T) {
 	_, err := Init()
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("err: %s", err.Error())
+	}
 }
 
 // func TestPlay(t *testing.T) {

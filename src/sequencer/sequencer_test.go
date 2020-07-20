@@ -10,7 +10,6 @@ import (
 	"github.com/kr/pretty"
 	log "github.com/schollz/logger"
 	"github.com/schollz/miti/src/music"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestParse(t *testing.T) {
@@ -38,7 +37,9 @@ pattern a
 		log.Tracef("%s %s", s, pretty.Sprint(c))
 	})
 	err := s.Parse("temp.miti")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("err: %s", err.Error())
+	}
 	fmt.Printf(pretty.Sprint(s))
 	s.Start()
 	time.Sleep(20 * time.Second)
