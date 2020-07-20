@@ -4,45 +4,30 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
-	"github.com/olekukonko/tablewriter"
 	log "github.com/schollz/logger"
 	"github.com/schollz/miti/src/midi"
 	"github.com/schollz/miti/src/music"
 	"github.com/schollz/miti/src/sequencer"
 )
 
-func PrintDevices() (err error) {
+func Play(mitiFile string) (err error) {
+	// show devices
 	devices, err := midi.Init()
 	if err != nil {
 		return
 	}
 	if len(devices) == 0 {
-		fmt.Println(`+-------------------+
-| NO INSTRUMENTS :( |
-+-------------------+`)
+		err = fmt.Errorf("no devices found")
 		return
 	}
-	data := [][]string{}
+	fmt.Println("Available MIDI devices:")
 	for _, device := range devices {
-		data = append(data, []string{device})
+		fmt.Printf("- %s\n", strings.ToLower(device))
 	}
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"INSTRUMENTS"})
-	for _, v := range data {
-		table.Append(v)
-	}
-	table.Render()
-	return
-}
-
-func Play(mitiFile string) (err error) {
-	// show devices
-	err = PrintDevices()
-	if err != nil {
-		return
-	}
+	fmt.Println(" ")
 
 	if len(mitiFile) == 0 {
 		return
