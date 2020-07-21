@@ -107,6 +107,7 @@ func Record(fname string) (err error) {
 			fmt.Printf("\r%s", currentState)
 		} else if key == 3 {
 			f.WriteString(currentState)
+			fmt.Println("---------------------------")
 			fmt.Printf("\n\nwrote to '%s'\n", fname)
 			break
 		}
