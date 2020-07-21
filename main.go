@@ -15,7 +15,7 @@ func init() {
 	flag.BoolVar(&flagDebug, "debug", false, "debug")
 	flag.BoolVar(&flagTrace, "trace", false, "trace")
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
-	flag.StringVar(&flagFile, "file", "", "file to load")
+	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
 }
 
 func main() {

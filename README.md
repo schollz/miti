@@ -39,19 +39,26 @@ To get started, first plugin your instruments to your computer. Open a command p
 
 ```
 > miti
-+---------------------------+
-|        INSTRUMENTS        |
-+---------------------------+
-| NTS-1 digital kit 1 SOUND |
-+---------------------------+
+Available MIDI devices:
+- midi through port-0
+- nts-1 digital kit midi 1
 ```
 
-You can use these instruments to build and chain patterns of notes.
-
-Modify an example in the `examples` to make sure its set to the instrument that you have. Then to run, you can just do
+You can then use these instruments to make a simple sequence. Make a new file called `first.miti` with the following:
 
 ```
-> miti --file examples/song1.miti
+pattern 1
+
+instruments nts-1
+C D E F G A B
+```
+
+Note that I did not write out the full MIDI device for the instrument. *miti* will accept any part of the device name and map it to the correct device. So here it will accept `nts-1` in place of writing `nts-1 digital kit midi 1`.
+
+Now to play this sequence you can just do:
+
+```
+> miti --play first.miti
 [info]  2020/07/17 08:18:12 playing
 ```
 
