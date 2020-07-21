@@ -84,6 +84,8 @@ func Record(fname string) (err error) {
 		_ = keyboard.Close()
 	}()
 
+	fmt.Println("Use MIDI keyboard to enter notes")
+	fmt.Println("Press . to enter rests")
 	fmt.Println("Press p to make new pattern")
 	fmt.Println("Press m to make new measure")
 	fmt.Println("Press backspace to delete last")
@@ -110,14 +112,16 @@ func Record(fname string) (err error) {
 			fmt.Println("\n---------------------------")
 			fmt.Printf("\nwrote to '%s'\n", fname)
 			break
-		}
-		if char == rune('m') {
+		} else if char == 46 {
+			currentState += ". "
+			fmt.Printf("\r%s", currentState)
+		} else if char == rune('m') {
 			f.WriteString(currentState)
 			f.WriteString("\n")
 			fmt.Print("\n")
 			currentState = ""
-		}
-		if char == rune('p') {
+			fmt.Printf("\r%s", currentState)
+		} else if char == rune('p') {
 			f.WriteString(currentState)
 			f.WriteString("\n\n\n")
 			fmt.Print("\n\n\n")
@@ -125,6 +129,13 @@ func Record(fname string) (err error) {
 			currentPattern = ""
 			patterns++
 		}
+		// } else if key == 32 {
+		// 	currentState += " "
+		// 	fmt.Printf("\r%s", currentState)
+		// } else {
+		// 	currentState += string(char)
+		// 	fmt.Printf("\r%s", currentState)
+		// }
 	}
 	finished <- true
 	time.Sleep(500 * time.Millisecond)
