@@ -50,6 +50,7 @@ func Init() (devices []string, err error) {
 	outputChannelsMapMatch = make(map[string]int)
 	for _, out := range outs {
 		log.Debugf("device: %s", out.String())
+		devices = append(devices, out.String())
 		// create a buffered channel for each instrument
 		outputChannelsMap[out.String()] = len(outputChannels)
 		outputChannels = append(outputChannels, make(chan music.Chord, 1000))

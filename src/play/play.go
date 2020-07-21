@@ -8,9 +8,11 @@ import (
 	"time"
 
 	"github.com/schollz/miti/src/log"
-	"github.com/schollz/miti/src/midi"
 	"github.com/schollz/miti/src/music"
 	"github.com/schollz/miti/src/sequencer"
+
+	// midi "github.com/schollz/miti/src/rtmidi" // use rtmidi instead
+	midi "github.com/schollz/miti/src/midi"
 )
 
 func Play(mitiFile string) (err error) {
