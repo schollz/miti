@@ -24,3 +24,10 @@ func TestMidiToNote(t *testing.T) {
 		t.Errorf("got wrong note: %v", note)
 	}
 }
+
+func TestNoteToMidi(t *testing.T) {
+	note := NoteToMidi("F", 4)
+	if note != 65 {
+		t.Errorf("got wrong note: %v", note)
+	}
+}

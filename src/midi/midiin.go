@@ -30,7 +30,13 @@ func ReadAll(finished chan bool) (events chan Event, err error) {
 			di := portmidi.Info(portmidi.DeviceID(i))
 			log.Tracef("di: %+v", di)
 			if strings.Contains(di.Name, "Wavetable Synth") {
+				log.Tracef("skipping %s", di.Name)
 				continue
+			}
+			if strings.Contains(di.Name, "Midi Through") {
+				log.Tracef("skipping %s", di.Name)
+				continue
+
 			}
 			numDevices++
 			if di.IsInputAvailable {

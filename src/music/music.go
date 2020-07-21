@@ -42,7 +42,7 @@ func NoteToMidi(note string, octave int) int {
 	if _, ok := allowedNotes[note]; !ok {
 		return -1
 	}
-	return allowedNotes[note] + 12*octave
+	return allowedNotes[note] + 12*(octave-1)
 }
 
 func ParseCluster(cluster string, lastNote0 ...Note) (ns []Note, err error) {
@@ -84,7 +84,7 @@ func popFirstNote(s string, lastNote Note) (s2 string, n Note, err error) {
 		n.MIDI = NoteToMidi(n.Name, n.Octave)
 	}()
 	if isValidNote(s) {
-		n = closestNote(s, lastNote)
+		n = ClosestNote(s, lastNote)
 		return
 	}
 	for i := 1; i <= len(s); i++ {
@@ -99,7 +99,7 @@ func popFirstNote(s string, lastNote Note) (s2 string, n Note, err error) {
 		if !isValidNote(nn) {
 			nn = string(s[:i-1])
 			s2 = strings.TrimPrefix(s, nn)
-			n = closestNote(nn, lastNote)
+			n = ClosestNote(nn, lastNote)
 			return
 		}
 	}
@@ -121,7 +121,7 @@ func isValidNote(s string) bool {
 	return false
 }
 
-func closestNote(name string, n Note) (n2 Note) {
+func ClosestNote(name string, n Note) (n2 Note) {
 	possibleNotes := []Note{NewNote(name, n.Octave), NewNote(name, n.Octave-1), NewNote(name, n.Octave+1)}
 	midiDiff := 10000.0
 	for i := 0; i < 3; i++ {

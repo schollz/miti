@@ -8,13 +8,13 @@ import (
 	"github.com/schollz/miti/src/record"
 )
 
-var flagDebug, flagTrace, flagRecord bool
-var flagFile string
+var flagDebug, flagTrace bool
+var flagFile, flagRecord string
 
 func init() {
 	flag.BoolVar(&flagDebug, "debug", false, "debug")
 	flag.BoolVar(&flagTrace, "trace", false, "trace")
-	flag.BoolVar(&flagRecord, "record", false, "record input")
+	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "file", "", "file to load")
 }
 
@@ -29,8 +29,8 @@ func main() {
 	}
 
 	var err error
-	if flagRecord {
-		err = record.Record()
+	if flagRecord != "" {
+		err = record.Record(flagRecord)
 	} else {
 		err = play.Play(flagFile)
 	}

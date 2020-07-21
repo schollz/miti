@@ -3,7 +3,7 @@ package record
 import (
 	"fmt"
 	"os"
-	"os/signal"
+	"strings"
 	"time"
 
 	"github.com/eiannone/keyboard"
@@ -12,28 +12,26 @@ import (
 	"github.com/schollz/miti/src/music"
 )
 
-func Record() (err error) {
+func Record(fname string) (err error) {
 	log.Debug("init recording")
-	finished := make(chan bool)
 
-	// shutdown everything on Ctl+C
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	go func() {
-		for sig := range c {
-			log.Debug(sig)
-			log.Info("shutting down")
-			finished <- true
-			time.Sleep(200 * time.Millisecond)
-		}
-	}()
+	f, err := os.Create(fname)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
+	finished := make(chan bool)
 
 	events, err := midi.ReadAll(finished)
 	if err != nil {
 		return
 	}
 
+	patterns := 0
+	currentPattern := ""
 	currentState := ""
+	previousNote := music.NewNote("C", 4)
 	go func() {
 		ticker := time.NewTicker(500 * time.Millisecond)
 		notes := []midi.Event{}
@@ -48,14 +46,33 @@ func Record() (err error) {
 				if len(notes) == 0 {
 					continue
 				}
+				if currentPattern == "" {
+					instrument := notes[0].Instrument
+					fs := strings.Fields(instrument)
+					if len(fs) > 2 {
+						fs = fs[:2]
+					}
+					currentPattern += fmt.Sprintf("pattern %d\n", patterns)
+					currentPattern += "instruments " + strings.ToLower(strings.Join(fs, " ")) + "\n"
+					fmt.Println(currentPattern)
+					f.WriteString(currentPattern)
+				}
+
 				for _, e := range notes {
 					log.Debugf("e: %+v", e)
 					note := music.MidiToNote(e.MIDI)
-					currentState += fmt.Sprintf("%s%d", note.Name, note.Octave)
+					closestNote := music.ClosestNote(note.Name, previousNote)
+					if closestNote.Octave == note.Octave {
+						currentState += fmt.Sprintf("%s", note.Name)
+					} else {
+						currentState += fmt.Sprintf("%s%d", note.Name, note.Octave)
+					}
+					previousNote = note
 				}
 				currentState += " "
-				fmt.Println("\r" + currentState)
 				notes = []midi.Event{}
+
+				fmt.Print("\r" + currentState)
 			}
 		}
 	}()
@@ -69,18 +86,31 @@ func Record() (err error) {
 
 	fmt.Println("Press p to make new pattern")
 	fmt.Println("Press m to make new measure")
-	fmt.Println("Press ESC to quit")
+	fmt.Println("Press Ctl+C to quit")
+	fmt.Println("---------------------------")
 	for {
 		char, key, err := keyboard.GetKey()
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("You pressed: rune %q, key %X\r\n", char, key)
-		if key == keyboard.KeyEsc {
+		if key == 3 {
+			f.WriteString(currentState)
+			fmt.Printf("\n\nwrote to '%s'\n", fname)
 			break
 		}
 		if char == rune('m') {
-			fmt.Println("presed m!")
+			f.WriteString(currentState)
+			f.WriteString("\n")
+			fmt.Print("\n")
+			currentState = ""
+		}
+		if char == rune('p') {
+			f.WriteString(currentState)
+			f.WriteString("\n\n\n")
+			fmt.Print("\n\n\n")
+			currentState = ""
+			currentPattern = ""
+			patterns++
 		}
 	}
 	finished <- true
