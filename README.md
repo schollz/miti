@@ -33,7 +33,7 @@ That's it! `miti` is now available from the command-line.
 
 ## Usage
 
-### First steps
+### Getting started playing music
 
 To get started, first plugin your instruments to your computer. Open a command prompt and type `miti` to see which instruments are available to you.
 
@@ -50,7 +50,7 @@ You can then use these instruments to make a simple sequence. Make a new file ca
 pattern 1
 
 instruments nts-1
-C D E F G A B
+C D E F G A B C
 ```
 
 Note that I did not write out the full MIDI device for the instrument. *miti* will accept any part of the device name and map it to the correct device. So here it will accept `nts-1` in place of writing `nts-1 digital kit midi 1`.
@@ -64,6 +64,23 @@ Now to play this sequence you can just do:
 
 And you'll hear some music!
 
+### Getting started making sequences
+
+You can make a sequence using any text editor you want. To get started quickly, though, you can record a sequence using your MIDI keyboard. Just plug in a keyboard and type:
+
+```
+> midi --record song2.miti 
+Press p to make new pattern
+Press m to make new measure
+Press Ctl+C to quit
+---------------------------
+
+```
+
+Then you can just play chords and notes on your MIDI keyboard and it will generate the sequence. When you are done with a measure, just press `m` to start a new one. When you are done with a pattern, just press `p` to start a new one. If you are finished, press `Ctl+C` to finish and write the file to disk. 
+
+Once the sequence is written, you can play it and edit it as much as you want.
+
 ## miti musical notation
 
 *miti* reads a `.miti` file, which is a high-level musical notation developed for *miti*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
@@ -74,13 +91,13 @@ The basic unit is the *pattern*. A *pattern* contains a collection of *instrumen
 For example, here is a simple pattern that plays Cmaj followed by Fmaj and then repeats.
 
 ```bash
-pattern a
+pattern 1
 instruments <instrument1>
 CEG
 FAC
 ```
 
-The `pattern a` designates the pattern name, "a". This pattern has a single instrument, `<instrument1>`. The instrument name must be contained in the official MIDI instrument name, case insensitive. For example, "nts-1" is a viable name if the MIDI instrument is "NTS-1 digital kit 1 SOUND."
+The `pattern 1` designates the pattern name, "1". This pattern has a single instrument, `<instrument1>`. The instrument name must be contained in the official MIDI instrument name, case insensitive. For example, "nts-1" is a viable name if the MIDI instrument is "NTS-1 digital kit 1 SOUND."
 
 Each line under `instruments` designates a different measure. This is where you put notes. Notes without spaces are considered a chord and will be played simultaneously. The first measure plays C, E, and G (C major) and the second measure plays F, A and C (F major). This pattern will repeat indefinitely when played.
 
@@ -91,7 +108,7 @@ To add more patterns, simply add a line with `pattern X` and again add `instrume
 You can easily add a second instrument to this section by adding another line with the instrument name:
 
 ```bash
-pattern a 
+pattern 1 
 instruments <instrument1>
 CEG 
 FAC
@@ -123,7 +140,7 @@ You can add in comments into the `.miti` file by putting a `#` in the beginning 
 
 ```
 # this is a comment
-pattern a 
+pattern 1 
 ```
 
 #### Chain patterns
@@ -133,7 +150,7 @@ If you have multiple patterns you can chain them together in any order using `ch
 ```
 chain a b b b b b
 
-pattern a
+pattern 1
 CEG
 
 pattern b 
