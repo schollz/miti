@@ -1,4 +1,10 @@
 github.com/eiannone/keyboard v0.0.0-20200508000154-caf4b762e807 h1:jdjd5e68T4R/j4PWxfZqcKY8KtT9oo8IPNVuV4bSXDQ=
 github.com/eiannone/keyboard v0.0.0-20200508000154-caf4b762e807/go.mod h1:Xoiu5VdKMvbRgHuY7+z64lhu/7lvax/22nzASF6GrO8=
+gitlab.com/gomidi/midi v1.16.4 h1:Cl2HrJh+ww7ivNlxyKbhEI7q3j9nqv7y/FF+8KFwz3s=
+gitlab.com/gomidi/midi v1.16.4/go.mod h1:3ohtNOhqoSakkuLG/Li1OI6I3J1c2LErnJF5o/VBq1c=
+gitlab.com/gomidi/rtmididrv v0.10.1 h1:BgqhFpBgythJqFbiR8QtL3CER1nh26YCUPFGVidS9gk=
+gitlab.com/gomidi/rtmididrv v0.10.1/go.mod h1:sBxBDsJKVhinLt+kk7fj6WfKRCmnFzFSkFY1chDNLbw=
+gitlab.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20191025100939-514fe0ed97a6 h1:0XqAH/BAxH5TTBzIWkdlZqpp6VUx6DFcQnMWW6G6hIc=
+gitlab.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20191025100939-514fe0ed97a6/go.mod h1:FYVFN2H23IsX56VntiDF9DgCIekHh359wW+iMl1W8rQ=
 golang.org/x/sys v0.0.0-20200720211630-cb9d2d5c5666 h1:gVCS+QOncANNPlmlO1AhlU3oxs4V9z+gTtPwIk3p2N8=
 golang.org/x/sys v0.0.0-20200720211630-cb9d2d5c5666/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
