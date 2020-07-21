@@ -53,7 +53,9 @@ instruments nts-1
 C D E F G A B C
 ```
 
-Note that I did not write out the full MIDI device for the instrument. *miti* will accept any part of the device name and map it to the correct device. So here it will accept `nts-1` in place of writing `nts-1 digital kit midi 1`.
+Make sure you replace `nts-1` with the name of your MIDI device! 
+
+Also, note that I did not write out the full MIDI device for the instrument. *miti* will accept any part of the device name and map it to the correct device. So in that example it will accept `nts-1` in place of writing `nts-1 digital kit midi 1`.
 
 Now to play this sequence you can just do:
 
