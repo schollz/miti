@@ -9,6 +9,7 @@
 - Control one/many MIDI devices simultaneously
 - Sequence single notes or chords, at any subdivision
 - Low latency (typically ~2 ms between metronome pulse and emitting note)
+- Low jitter (depends on instrument, but usually 0-2 ms for modern instruments)
 - Edit sequence in realtime
 - Write sequences in human-readable text
 
@@ -18,9 +19,6 @@
 
 <p align="center"><a href="https://www.youtube.com/watch?v=Mp1-8MSVVkA"><img src="https://user-images.githubusercontent.com/6550035/87845036-1f00d380-c878-11ea-9fbc-9054a8e979f8.PNG" alt="Demo of playing" width=80%></a></p>
 
-## Known issues
-
-- Jitter. With two instruments emitting at 240 BPM the jitter averages ~5 ms, but ranges between 0 and 20ms (measured via incoming audio), which is tolerable. Unfortunately, with three instruments there are jitter spikes of 100 ms :( Looking into the cause.
 
 ## Install
 

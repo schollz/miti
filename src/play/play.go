@@ -43,14 +43,15 @@ func Play(mitiFile string) (err error) {
 	// if log.GetLevel() == "info" {
 	// 	tm.Clear()
 	// }
+	startTime := time.Now()
 	seq := sequencer.New(func(s string, c music.Chord) {
 		if shutdownInitiated {
 			return
 		}
-		log.Tracef("[%s] forwarding emit", s)
+		log.Debugf("%2.5f [%s] emitting %+v", time.Since(startTime).Seconds(), s, c)
 		errMidi := midi.Midi(s, c)
 		if errMidi != nil {
-			log.Debug(errMidi)
+			log.Trace(errMidi)
 		}
 		// if log.GetLevel() == "info" {
 		// 	tm.MoveCursor(1, 1)
