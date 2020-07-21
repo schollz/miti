@@ -84,6 +84,10 @@ func Init() (devices []string, err error) {
 						// shutdown
 						midio.Close()
 						channelLock.Unlock()
+						go func() {
+							time.Sleep(50 * time.Millisecond)
+							drv.Close()
+						}()
 						return
 					}
 					channelLock.Unlock()
