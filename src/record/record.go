@@ -86,14 +86,26 @@ func Record(fname string) (err error) {
 
 	fmt.Println("Press p to make new pattern")
 	fmt.Println("Press m to make new measure")
+	fmt.Println("Press backspace to delete last")
 	fmt.Println("Press Ctl+C to quit")
 	fmt.Println("---------------------------")
 	for {
 		char, key, err := keyboard.GetKey()
+		log.Tracef("char: %v, key: %v", char, key)
 		if err != nil {
 			panic(err)
 		}
-		if key == 3 {
+		if key == 127 {
+			fs := strings.Fields(currentState)
+			fmt.Print("\r                  ")
+			if len(fs) <= 1 {
+				currentState = ""
+			} else {
+				fs = fs[:len(fs)-1]
+				currentState = strings.Join(fs, " ") + " "
+			}
+			fmt.Printf("\r%s", currentState)
+		} else if key == 3 {
 			f.WriteString(currentState)
 			fmt.Printf("\n\nwrote to '%s'\n", fname)
 			break
