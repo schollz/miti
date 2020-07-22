@@ -134,7 +134,7 @@ func (s *Stream) WriteShort(status int64, data1 int64, data2 int64) error {
 // WriteShorts writes a bunch of MIDI events of three bytes immediately to the output stream.
 func (s *Stream) WriteShorts(status int64, data1s []int64, data2s []int64) error {
 	evts := make([]Event, len(data1s))
-	timestamp := Timestamp(C.Pt_Time())
+	timestamp := Timestamp(C.Pt_Time() + 100)
 	for i := range data1s {
 		evts[i] = Event{
 			Timestamp: timestamp,
