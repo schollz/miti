@@ -1,18 +1,49 @@
-pattern a 
+pattern 1
 
 tempo 110
-instruments nts-1
-legato 1
-Eb1 G Bb
 
 instruments op-1
-legato 50
-Bb3D4  G3 Eb- Eb . . . . Bb3Eb4 G3 Eb- Eb . . . .
-Bb3Eb4 G3 Eb- Eb . . . . Bb3Eb4 G3 Eb- Eb . . . .
-G3C4  Eb3 C- C . . . . G3C4  Eb3 C- C . . . . 
-G3C4  Eb3 C- C . . . . G3C4  Eb3 C- C . . . . 
+legato 20
+Bb4  G4 Eb- Eb . . . . Bb4 G4 Eb- Eb . . . .
+Bb4 G4 Eb- Eb . . . . Bb4 G4 Eb- Eb . . . .
+G4  Eb4 C- C . . . . G4  Eb4 C- C . . . . 
+G4  Eb4 C- C . . . . G4  Eb4 C- C . . . . 
 
-instruments sh-01a
+pattern 2 
+
+instruments op-1
+legato 40
+Bb4  G4 Eb- Eb . . . . Bb4 G4 Eb- Eb . . . .
+Bb4 G4 Eb- Eb . . . . Bb4 G4 Eb- Eb . . . .
+G4  Eb4 C- C . . . . G4  Eb4 C- C . . . . 
+G4  Eb4 C- C . . . . G4  Eb4 C- C . . . . 
+
+
+instruments boutique
+legato 90
+Eb3GBb 
+D3FBb
+C3EbG- 
+C3EbG
+
+pattern 3
+
+instruments op-1
+legato 60
+Bb4D5  G4 Eb- Eb . . . . Bb4Eb5 G4 Eb- Eb . . . .
+Bb4Eb5 G4 Eb- Eb . . . . Bb4Eb5 G4 Eb- Eb . . . .
+G4C5  Eb4 C- C . . . . G4C5  Eb4 C- C . . . . 
+G4C5  Eb4 C- C . . . . G4C5  Eb4 C- C . . . . 
+
+instruments nts-1
+legato 100
+Eb3  
+Bb2
+C3
+G3 F3
+
+
+instruments boutique
 legato 90
 Eb3GBb 
 D3FBb
@@ -20,5 +51,29 @@ C3EbG-
 C3EbG
 
 
+pattern 4
 
+instruments op-1
+legato 60
+Bb4D5  G4 Eb- Eb . . . . Bb4Eb5 G4 Eb- Eb . . . .
+Bb4Eb5 G4 Eb- Eb . . . . Bb4Eb5 G4 Eb- Eb . . . .
+G4C5  Eb4 C- C . . . . G4C5  Eb4 C- C . . . . 
+G4C5  Eb4 C- C . . . . G4C5  Eb4 C- C . . . . 
 
+instruments nts-1
+legato 50
+Eb1 G Bb Eb G Bb  Eb G Bb  Eb G Bb  Eb G Bb  Eb G Bb 
+D1 F Bb D F Bb  D F Bb  D F Bb D F Bb D F Bb
+C1 Eb G C Eb G C Eb G C Eb G C Eb G C Eb G
+C1 Eb G C Eb G C Eb G C Eb G C Eb G C Eb G
+
+instruments boutique
+legato 90
+Eb3GBb 
+D3FBb
+C3EbG- 
+C3EbG
+Eb3GBb 
+D3FBb
+C3EbG- 
+C3EbG
