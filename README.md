@@ -232,7 +232,8 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] Easily identify instruments with partial matches (if contains)
 - [x] Allow chaining patterns in different ways `chain: a a b b a a`
 - [x] allow comments
-- [ ] Find source of spurious jitter
+- [x] Find source of spurious jitter
+- [ ] use portmidi scheduling to further eliminate jitter
 
 ### Won't to do
 
