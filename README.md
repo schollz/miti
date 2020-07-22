@@ -17,7 +17,8 @@
 
 <p align="center"><a href="https://www.youtube.com/watch?v=ZFbXcff8u6c"><img src="https://user-images.githubusercontent.com/6550035/88124571-490d0b00-cb82-11ea-9857-adc2fe3439ea.PNG" alt="Demo of playing" width=80%></a></p>
 
-<p align="center"><a href="https://www.youtube.com/watch?v=Mp1-8MSVVkA"><img src="https://user-images.githubusercontent.com/6550035/87845036-1f00d380-c878-11ea-9fbc-9054a8e979f8.PNG" alt="Demo of playing" width=80%></a></p>
+<p align="center"><a href="https://www.youtube.com/watch?v=7YCStGAToN0"><img src="https://user-images.githubusercontent.com/6550035/88061176-01539880-cb1c-11ea-81af-5ce8165fc060.png" alt="Demo of playing" width=80%></a></p>
+
 
 
 ## Install
