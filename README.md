@@ -9,9 +9,10 @@
 - Control one/many MIDI devices simultaneously
 - Sequence single notes or chords, at any subdivision
 - Low latency (typically ~2 ms between metronome pulse and emitting note)
-- Low jitter (depends on instrument, but usually 0-2 ms for modern instruments)
+- [Low jitter](https://github.com/schollz/miti/issues/4) (typically 0-5 ms)
 - Edit sequence in realtime
 - Write sequences in human-readable text
+- Runs on any computer, even Raspberry Pis
 
 ## Demos
 
