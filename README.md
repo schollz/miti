@@ -4,6 +4,26 @@
 
 *miti* provides a program and musical notation that you can use to easily connect and control sounds in a very human way. It provides surprisingly simple sequencing for synthesizers or other instruments, namely control from  your favorite text editor.
 
+* [Features](#features)
+* [Demos](#demos)
+* [Install](#install)
+* [Documentation](#documentation)
+ * [Getting started playing music](#getting-started-playing-music)
+ * [Getting started making sequences](#getting-started-making-sequences)
+ * [Basic pattern](#basic-pattern)
+ * [Add instruments and subdivisions](#add-instruments-and-subdivisions)
+ * [Adding comments](#adding-comments)
+ * [Chain patterns](#chain-patterns)
+ * [Specifying octave of note](#specifying-octave-of-note)
+ * [Setting the tempo](#setting-the-tempo)
+ * [Changing the legato](#changing-the-legato)
+ * [Sustain](#sustain)
+ * [Multiple instruments](#multiple-instruments)
+* [Other similar work](#other-similar-work)
+* [To Do](#to-do)
+ * [Won't do](#wont-do)
+
+
 ## Features
 
 - Control one/many external/virtual MIDI devices simultaneously
@@ -32,7 +52,7 @@ Next install [Go](https://golang.org/dl/) and then in a terminal:
 That's it! `miti` is now available from the command-line.
 
 
-## Usage
+## Documentation
 
 ### Getting started playing music
 
@@ -73,22 +93,23 @@ You can make a sequence using any text editor you want. To get started quickly, 
 
 ```
 > midi --record song2.miti 
+Use MIDI keyboard to enter notes
+Press . to enter rests
 Press p to make new pattern
 Press m to make new measure
+Press backspace to delete last
 Press Ctl+C to quit
----------------------------
-
 ```
 
 Then you can just play chords and notes on your MIDI keyboard and it will generate the sequence. When you are done with a measure, just press `m` to start a new one. When you are done with a pattern, just press `p` to start a new one. If you are finished, press `Ctl+C` to finish and write the file to disk. 
 
 Once the sequence is written, you can play it and edit it as much as you want.
 
-## miti musical notation
 
-*miti* reads a `.miti` file, which is a high-level musical notation developed for *miti*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
 
 ### Basic pattern
+
+*miti* reads a `.miti` file, which is a high-level musical notation developed for *miti*. The musical notation is simple and powerful, allowing you to create patterns of notes that can be played on many instruments simultaneously.
 
 The basic unit is the *pattern*. A *pattern* contains a collection of *instruments*. Each *instrument* contains a collection of notes.
 For example, here is a simple pattern that plays Cmaj followed by Fmaj and then repeats.
@@ -132,12 +153,7 @@ instruments <instrument1>
 ```
 
 
-### Other specifications
-
-Here are other keywords you can use to modulate the song in the `.miti` file:
-
-
-#### Adding comments
+### Adding comments
 
 You can add in comments into the `.miti` file by putting a `#` in the beginning of the line:
 
@@ -146,7 +162,7 @@ You can add in comments into the `.miti` file by putting a `#` in the beginning 
 pattern 1 
 ```
 
-#### Chain patterns
+### Chain patterns
 
 If you have multiple patterns you can chain them together in any order using `chain`. The order will repeat once it gets to the end. For example, this repeats the first pattern followed by 5 of the second pattern:
 
@@ -160,12 +176,12 @@ pattern b
 DFA
 ```
 
-#### Specific notes
+### Specifying octave of note
 
 By default, the note played will be the note closest to the previous. If you want to specify the exact note you can add a suffix to include the octave. For example, instead of writing `CEG` you could instead write `C3E4G5` which will span the chord over three octaves.
 
 
-#### Setting the tempo
+### Setting the tempo
 
 You can add a line to change the tempo, anywhere in the file.
 
@@ -173,7 +189,7 @@ You can add a line to change the tempo, anywhere in the file.
 tempo <10-300>
 ````
 
-#### Changing the legato
+### Changing the legato
 
 The legato specifies how much to hold each note until releasing it. Full legato (100) holds to the very end, while the shortest legato (1) will release immediately after playing.
 
@@ -181,7 +197,7 @@ The legato specifies how much to hold each note until releasing it. Full legato 
 legato <1-100>
 ```
 
-#### Sustain 
+### Sustain 
 
 For a pedal note (sustain) add a `*` to the end of the note. For example, the following will sustain a C major chord for two measures:
 
@@ -196,7 +212,7 @@ This next example shows how to hold out a C major chord for three beats and rest
 CEG- CEG- CEG .
 ```
 
-#### Multiple instruments
+### Multiple instruments
 
 You can assign multiple instruments to a pattern by separating each instrument by a comma. For example:
 
@@ -234,7 +250,7 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] Find source of spurious jitter
 - [x] use portmidi scheduling to further eliminate jitter
 
-### Won't to do
+### Won't do
 
 - Use chords instead of notes. It turns out note clusters are more expressive in many cases. For example writing "Gmin/D" or "Gmin2inv" both take up more space than just writing "DGBb".
 
