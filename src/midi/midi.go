@@ -53,7 +53,7 @@ func Init() (devices []string, err error) {
 						log.Debug("recovered panic")
 					}
 				}()
-				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, 100)
+				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, 2000)
 				if err != nil {
 					panic(err)
 				}
