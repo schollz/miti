@@ -6,13 +6,12 @@
 
 ## Features
 
-- Control one/many MIDI devices simultaneously
+- Control one/many external/virtual MIDI devices simultaneously
 - Sequence single notes or chords, at any subdivision
-- Low latency (typically ~2 ms between metronome pulse and emitting note)
-- [Low jitter](https://github.com/schollz/miti/issues/4) (typically 0-5 ms)
-- Edit sequence in realtime
-- Write sequences in human-readable text
-- Runs on any computer, even Raspberry Pis
+- Low latency (~2 ms) and low jitter (~2 ms, with [rare spikes of 10-15 ms](https://github.com/schollz/miti/issues/4))
+- Real-time editing of sequences using any text editor
+- Sequences specified using human-readable text
+- Compatible with Windows, macOS, Linux, Raspberry Pis
 
 ## Demos
 
@@ -191,7 +190,7 @@ CEG-
 CEG
 ```
 
-This next example shows how to hold out a C major chord for 3 beats:
+This next example shows how to hold out a C major chord for three beats and resting on the fourth beat:
 
 ```
 CEG- CEG- CEG .
@@ -233,7 +232,7 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] Allow chaining patterns in different ways `chain: a a b b a a`
 - [x] allow comments
 - [x] Find source of spurious jitter
-- [ ] use portmidi scheduling to further eliminate jitter
+- [x] use portmidi scheduling to further eliminate jitter
 
 ### Won't to do
 
