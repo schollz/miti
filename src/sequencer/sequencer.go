@@ -218,14 +218,31 @@ func (s *Sequencer) Parse(fname string) (err error) {
 				}
 				if strings.HasPrefix(cluster, ":") {
 					// interpret as a chord
+					cluster = strings.TrimPrefix(cluster, ":")
+					extra := strings.Split(cluster, ":")
 					var notes []music.Note
-					notes, err = music.ChordToNotes(cluster[1:])
+					notes, err = music.ChordToNotes(extra[0])
 					if err != nil {
 						return
 					}
 					cluster = ""
+					octaveAdj := 0
+					holdChord := false
+					if len(extra) > 1 {
+						if strings.HasSuffix(extra[1], "-") {
+							holdChord = true
+							extra[1] = strings.TrimSuffix(extra[1], "-")
+						}
+						startOctave, errR := strconv.Atoi(extra[1])
+						if errR == nil {
+							octaveAdj = startOctave - notes[0].Octave
+						}
+					}
 					for _, note := range notes {
-						cluster += fmt.Sprintf("%s%d", note.Name, note.Octave)
+						cluster += fmt.Sprintf("%s%d", note.Name, note.Octave+octaveAdj)
+					}
+					if holdChord {
+						cluster += "-"
 					}
 				}
 				holdNote := false

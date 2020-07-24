@@ -31,8 +31,8 @@ func (c Chord) String() string {
 
 type Note struct {
 	Name   string
-	MIDI   int
 	Octave int
+	MIDI   int
 }
 
 func NewNote(name string, octave int) Note {

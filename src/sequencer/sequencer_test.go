@@ -21,7 +21,7 @@ tempo 240
 pattern a
 
  instruments op-1
- CEG :Cm7/F
+ :C/G:2 :Am:- :Am: :F :G
 
  pattern b 
  
@@ -39,6 +39,7 @@ pattern a
 	err := s.Parse("temp.miti")
 	if err != nil {
 		t.Errorf("err: %s", err.Error())
+		os.Exit(1)
 	}
 	fmt.Printf(pretty.Sprint(s))
 	s.Start()
