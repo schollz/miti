@@ -3,6 +3,7 @@ build:
 
 
 release:
+	rm -f *.zip
 	rm -f miti 
 	rm -rf dist 
 	go generate
