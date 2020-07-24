@@ -216,6 +216,18 @@ func (s *Sequencer) Parse(fname string) (err error) {
 				if cluster == "." {
 					continue
 				}
+				if strings.HasPrefix(cluster, ":") {
+					// interpret as a chord
+					var notes []music.Note
+					notes, err = music.ChordToNotes(cluster[1:])
+					if err != nil {
+						return
+					}
+					cluster = ""
+					for _, note := range notes {
+						cluster += fmt.Sprintf("%s%d", note.Name, note.Octave)
+					}
+				}
 				holdNote := false
 				if strings.HasSuffix(cluster, "-") {
 					holdNote = true

@@ -2,9 +2,14 @@ package music
 
 import (
 	"fmt"
+	"io/ioutil"
 	"math"
+	"os"
+	"os/exec"
 	"strconv"
 	"strings"
+
+	"github.com/kbinani/midi"
 )
 
 type Chord struct {
@@ -188,4 +193,96 @@ func MidiToNote(midi int) Note {
 		return Note{}
 	}
 	return midiToNote[midi]
+}
+
+// ChordToNotes converts chords to notes using lilypond
+func ChordToNotes(c string) (notes []Note, err error) {
+	tmpfile, err := ioutil.TempFile("", "lilypond")
+	if err != nil {
+		return
+	}
+	defer os.Remove(tmpfile.Name()) // clean up
+
+	_, err = tmpfile.WriteString(`\version "2.20.0"
+\score {
+\chordmode { ` + ChordToLilypond(c) + ` }
+  \midi { }
+}`)
+	if err != nil {
+		return
+	}
+	err = tmpfile.Close()
+	if err != nil {
+		return
+	}
+
+	cmd := exec.Command("lilypond", "-o", tmpfile.Name(), tmpfile.Name())
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		err = fmt.Errorf("lilypond error: %s\n\ndata: '%s'", err.Error(), output)
+		return
+	}
+	defer os.Remove(tmpfile.Name() + ".midi")
+
+	f, err := os.Open(tmpfile.Name() + ".midi")
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
+	file, err := midi.Read(f)
+	if err != nil {
+		return
+	}
+	for i, track := range file.Tracks {
+		if i != 1 {
+			continue
+		}
+		for _, n := range track.Events {
+			if len(n.Messages) < 3 {
+				continue
+			}
+			if n.Tick == 0 && n.Messages[2] == 90 {
+				notes = append(notes, MidiToNote(int(n.Messages[1])))
+			}
+		}
+	}
+	return
+}
+
+// ChordToLilypond takes a chord like Bbm7/F and converts it
+// into suitable lilypond (bes:m7/f)
+func ChordToLilypond(c string, beats ...float64) (d string) {
+	beats0 := 4.0
+	if len(beats) > 0 {
+		beats0 = beats[0]
+	}
+	c = strings.Replace(strings.ToLower(c), " ", "", -1)
+	if len(c) > 1 && string(c[1]) == "b" {
+		d = fmt.Sprintf("%ses%d", string(c[0]), int(4.0/beats0))
+		if len(c) > 2 {
+
+		}
+		if len(c) > 2 {
+			d += ":" + c[2:]
+		}
+	} else if len(c) > 1 && string(c[1]) == "#" {
+		d = fmt.Sprintf("%sis%d", string(c[0]), int(4.0/beats0))
+		if len(c) > 2 {
+			d += ":" + c[2:]
+		}
+	} else {
+		d = fmt.Sprintf("%s%d", string(c[0]), int(4.0/beats0))
+		if len(c) > 1 {
+			d += ":" + c[1:]
+		}
+	}
+	for _, a := range []string{"a", "b", "c", "d", "e", "f", "g"} {
+		d = strings.Replace(d, a+"b", a+"es", -1)
+		d = strings.Replace(d, a+"#", a+"is", -1)
+	}
+	d = strings.Replace(d, "(add9)", "5.9", -1)
+	d = strings.Replace(d, "(b5)", "7.5-", -1)
+	d = strings.Replace(d, "o", "dim", -1)
+	return
 }

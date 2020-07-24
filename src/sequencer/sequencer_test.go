@@ -21,7 +21,7 @@ tempo 240
 pattern a
 
  instruments op-1
- CEG 
+ CEG :Cm7/F
 
  pattern b 
  
