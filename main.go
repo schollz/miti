@@ -14,7 +14,7 @@ import (
 	"github.com/schollz/miti/src/record"
 )
 
-var flagDebug, flagTrace, flagVersion bool
+var flagDebug, flagTrace, flagVersion, flagList bool
 var flagFile, flagRecord string
 
 // Version specifies the version
@@ -23,6 +23,7 @@ var Version string
 func init() {
 	flag.BoolVar(&flagDebug, "debug", false, "debug")
 	flag.BoolVar(&flagTrace, "trace", false, "trace")
+	flag.BoolVar(&flagList, "list", false, "list midi devices")
 	flag.BoolVar(&flagVersion, "version", false, "show version")
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
@@ -44,11 +45,14 @@ func main() {
 	if flagVersion {
 		return
 	}
+	play.Version = Version
 	var err error
 	if flagRecord != "" {
 		err = record.Record(flagRecord)
+	} else if flagList {
+		err = play.Play("", true)
 	} else {
-		err = play.Play(flagFile)
+		err = play.Play(flagFile, false)
 	}
 	if err != nil {
 		log.Error(err)

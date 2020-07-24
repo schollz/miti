@@ -4,18 +4,22 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/music"
 	"github.com/schollz/miti/src/sequencer"
+	"github.com/skratchdot/open-golang/open"
 
 	// midi "github.com/schollz/miti/src/rtmidi" // use rtmidi instead
 	midi "github.com/schollz/miti/src/midi"
 )
 
-func Play(mitiFile string) (err error) {
+var Version string
+
+func Play(mitiFile string, justShowDevices bool) (err error) {
 	// show devices
 	devices, err := midi.Init()
 	if err != nil {
@@ -31,6 +35,64 @@ func Play(mitiFile string) (err error) {
 	}
 	fmt.Println(" ")
 
+	if justShowDevices {
+		return
+	}
+
+	if mitiFile == "" {
+		// generate a default miti file
+		mitiFile, _ = filepath.Abs("miti.txt")
+		_, erre := os.Stat(mitiFile)
+		if os.IsNotExist(erre) {
+			f, _ := os.Create(mitiFile)
+			f.WriteString(`# welcome to miti (` + Version + `)!
+# this is your miti file: ` + mitiFile + ` (this file).
+# modify this file and save to update the sequencing on your instruments.
+# <- lines beginning with "#" are comments. feel free to delete them.
+
+# use chain to chain together patterns.
+# (the following chain loops pattern 1 twice, then pattern 2 once).
+chain 1 1 2
+
+# adjust tempo.
+tempo 60
+
+# define a pattern.
+# this pattern is named "1", but you can use any name.
+pattern 1
+
+# define instruments for pattern.
+# multiple instruments separated commas.
+# (your available instruments are already listed).
+instruments ` + strings.ToLower(strings.Join(devices, ", ")) + `
+
+# choose legato of the notes.
+legato 100
+
+# add in notes.
+# notes are subidivided by number of spaces.
+# each line is one measure.
+CEG
+ACE 
+FAC 
+GBD
+
+# you can add other instruments in this pattern here, for example:
+# instruments instrument2
+# C E G C E G
+
+# define another pattern.
+pattern 2
+instruments ` + strings.ToLower(strings.Join(devices, ", ")) + `
+legato 50
+E B G E B G E B G E B G 
+`)
+			f.Close()
+		}
+
+		open.Run(mitiFile)
+	}
+
 	if len(mitiFile) == 0 {
 		return
 	}
@@ -39,25 +101,17 @@ func Play(mitiFile string) (err error) {
 	watcherDone := make(chan bool)
 	shutdownInitiated := false
 
-	// start sequencer with midi equipped
-	// if log.GetLevel() == "info" {
-	// 	tm.Clear()
-	// }
 	startTime := time.Now()
 	seq := sequencer.New(func(s string, c music.Chord) {
 		if shutdownInitiated {
 			return
 		}
-		log.Debugf("%2.5f [%s] emitting %+v", time.Since(startTime).Seconds(), s, c)
 		errMidi := midi.Midi(s, c)
 		if errMidi != nil {
 			log.Trace(errMidi)
+		} else {
+			log.Infof("%2.5f [%s] emitting %+v", time.Since(startTime).Seconds(), s, c)
 		}
-		// if log.GetLevel() == "info" {
-		// 	tm.MoveCursor(1, 1)
-		// 	tm.Printf("%s: %+v\n\n", s, c)
-		// 	tm.Flush()
-		// }
 	})
 
 	// shutdown everything on Ctl+C
