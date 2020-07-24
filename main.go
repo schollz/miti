@@ -8,10 +8,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/play"
 	"github.com/schollz/miti/src/record"
+	"github.com/skratchdot/open-golang/open"
 )
 
 var flagDebug, flagTrace, flagVersion bool
@@ -48,6 +50,15 @@ func main() {
 	if flagRecord != "" {
 		err = record.Record(flagRecord)
 	} else {
+		f, _ := os.Create("song.txt")
+		f.WriteString(`chain 1 
+pattern 1 
+instruments 1
+CEG
+`)
+		f.Close()
+		open.Start(f.Name())
+		flagFile = f.Name()
 		err = play.Play(flagFile)
 	}
 	if err != nil {
