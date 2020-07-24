@@ -10,12 +10,13 @@ import (
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/music"
 	"github.com/schollz/miti/src/sequencer"
+	"github.com/skratchdot/open-golang/open"
 
 	// midi "github.com/schollz/miti/src/rtmidi" // use rtmidi instead
 	midi "github.com/schollz/miti/src/midi"
 )
 
-func Play(mitiFile string) (err error) {
+func Play(mitiFile string, justShowDevices bool) (err error) {
 	// show devices
 	devices, err := midi.Init()
 	if err != nil {
@@ -30,6 +31,53 @@ func Play(mitiFile string) (err error) {
 		fmt.Printf("- %s\n", strings.ToLower(device))
 	}
 	fmt.Println(" ")
+
+	if justShowDevices {
+		return
+	}
+
+	if mitiFile == "" {
+		// generate a default miti file
+		f, _ := os.Create("song.txt")
+		f.WriteString(`# welcome to miti!
+# this is a miti file and it allows you to sequence your instruments.
+# after you edit, just save this file and it will update the sequence!
+# <- this is a comment. the comments below should guide you!
+
+# use chain to chain together patterns
+chain 1 1 2
+
+# adjust temp 
+tempo 60
+
+# define pattern, you can define any number of patterns
+pattern 1
+
+# define instruments for pattern
+# multiple instruments separated
+# by a comma
+instruments ` + strings.ToLower(strings.Join(devices, ", ")) + `
+
+# choose legato of the notes
+legato 100
+
+# add in notes
+# one line is one measure
+CEG
+ACE 
+FAC 
+GBD
+
+# another pattern 
+pattern 2
+instruments ` + strings.ToLower(strings.Join(devices, ", ")) + `
+legato 50
+E B G E B G E B G E B G 
+`)
+		f.Close()
+		open.Run(f.Name())
+		mitiFile = f.Name()
+	}
 
 	if len(mitiFile) == 0 {
 		return

@@ -8,15 +8,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/play"
 	"github.com/schollz/miti/src/record"
-	"github.com/skratchdot/open-golang/open"
 )
 
-var flagDebug, flagTrace, flagVersion bool
+var flagDebug, flagTrace, flagVersion, flagList bool
 var flagFile, flagRecord string
 
 // Version specifies the version
@@ -25,6 +23,7 @@ var Version string
 func init() {
 	flag.BoolVar(&flagDebug, "debug", false, "debug")
 	flag.BoolVar(&flagTrace, "trace", false, "trace")
+	flag.BoolVar(&flagList, "list", false, "list midi devices")
 	flag.BoolVar(&flagVersion, "version", false, "show version")
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
@@ -49,17 +48,10 @@ func main() {
 	var err error
 	if flagRecord != "" {
 		err = record.Record(flagRecord)
+	} else if flagList {
+		err = play.Play("", true)
 	} else {
-		f, _ := os.Create("song.txt")
-		f.WriteString(`chain 1 
-pattern 1 
-instruments 1
-CEG
-`)
-		f.Close()
-		open.Start(f.Name())
-		flagFile = f.Name()
-		err = play.Play(flagFile)
+		err = play.Play(flagFile, false)
 	}
 	if err != nil {
 		log.Error(err)
