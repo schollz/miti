@@ -238,10 +238,10 @@ To directly use chords, you can use the semicolon operator flanking the chord na
 :C :C :Am :Am
 ```
 
-If you want to alter the chord octave or add sustain, you do same as before but add another semicolon operator on the right side. In this example, the C major chord is held out for two beats and it starts on the 2nd octave:
+If you want to alter the chord octave or add sustain, you do same as before but add another semicolon operator on the right side. In this example, the C major chord is played on the 3rd octave and held out for two beats using a sustain (`-` suffix):
 
 ```
-:C:2- :C:2 :Am :Am
+:C:3- :C:3 :Am :Am
 ```
 
 Chords can get pretty complex, and they should be understood. For example, you can add chord adjusters:
