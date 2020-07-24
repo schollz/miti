@@ -178,8 +178,10 @@ var c0notes = map[string]int{
 	"B":  35,
 }
 var midiToNote map[int]Note
+var chordToNotesCache map[string][]Note
 
 func init() {
+	chordToNotesCache = make(map[string][]Note)
 	midiToNote = make(map[int]Note)
 	for octave := 1; octave < 8; octave++ {
 		for note := range c0notes {
@@ -197,6 +199,16 @@ func MidiToNote(midi int) Note {
 
 // ChordToNotes converts chords to notes using lilypond
 func ChordToNotes(c string) (notes []Note, err error) {
+	if _, ok := chordToNotesCache[c]; ok {
+		notes = chordToNotesCache[c]
+		return
+	}
+	defer func() {
+		if err == nil {
+			chordToNotesCache[c] = notes
+		}
+	}()
+
 	tmpfile, err := ioutil.TempFile("", "lilypond")
 	if err != nil {
 		return

@@ -134,7 +134,7 @@ func (s *Sequencer) Emit(pulse int) {
 func (s *Sequencer) Parse(fname string) (err error) {
 	startTime := time.Now()
 	defer func() {
-		log.Infof("parsed sequence '%s' in %s", fname, time.Since(startTime))
+		log.Infof("parsed sequence '%s' in %2.1f ms", fname, 1000*time.Since(startTime).Seconds())
 	}()
 
 	b, err := ioutil.ReadFile(fname)
