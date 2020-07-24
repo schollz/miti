@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -38,31 +39,35 @@ func Play(mitiFile string, justShowDevices bool) (err error) {
 
 	if mitiFile == "" {
 		// generate a default miti file
-		f, _ := os.Create("song.txt")
-		f.WriteString(`# welcome to miti!
-# this is a miti file and it allows you to sequence your instruments.
-# after you edit, just save this file and it will update the sequence!
-# <- this is a comment. the comments below should guide you!
+		mitiFile, _ = filepath.Abs("miti.txt")
+		_, erre := os.Stat(mitiFile)
+		if os.IsNotExist(erre) {
+			f, _ := os.Create(mitiFile)
+			f.WriteString(`# welcome to miti!
+# this is your miti file (` + mitiFile + `)
+# modify this file and save to update the sequencing on your instruments.
+# <- this is a comment. they are here to guide you, feel free to delete them.
 
 # use chain to chain together patterns
 chain 1 1 2
 
-# adjust temp 
+# adjust tempo
 tempo 60
 
-# define pattern, you can define any number of patterns
+# define pattern
+# (you can define any number of patterns)
 pattern 1
 
 # define instruments for pattern
-# multiple instruments separated
-# by a comma
+# (multiple instruments separated commas)
 instruments ` + strings.ToLower(strings.Join(devices, ", ")) + `
 
 # choose legato of the notes
 legato 100
 
 # add in notes
-# one line is one measure
+# notes are subidivided by number of spaces 
+# each line is one measure
 CEG
 ACE 
 FAC 
@@ -74,9 +79,10 @@ instruments ` + strings.ToLower(strings.Join(devices, ", ")) + `
 legato 50
 E B G E B G E B G E B G 
 `)
-		f.Close()
-		open.Run(f.Name())
-		mitiFile = f.Name()
+			f.Close()
+		}
+
+		open.Run(mitiFile)
 	}
 
 	if len(mitiFile) == 0 {

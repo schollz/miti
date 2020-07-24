@@ -46,24 +46,31 @@
 
 ## Install
 
-First install `portmidi`, following [these directions](https://schollz.com/blog/portmidi/).
+The easiest way to install is to download the [latest release](https://github.com/schollz/miti/releases/latest).
+
+
+Its very easy to install from the source code too. To install from the source code, first install `portmidi`, following [these directions](https://schollz.com/blog/portmidi/).
 
 Next install [Go](https://golang.org/dl/) and then in a terminal:
 
 	> go install github.com/schollz/miti
 
-That's it! `miti` is now available from the command-line.
+_Optional:_ If you want to input [chord names](#chord-names) then you need to also [download and instal LilyPond](https://lilypond.org/download.html) on your system.
 
-If you want to input [chord names](#chord-names) then you need to also [download and instal LilyPond](https://lilypond.org/download.html) on your system.
+That's it! `miti` is now available from the command-line.
 
 ## Documentation
 
+### Quickstart
+
+You don't need to be familiar with command-lines to get started. Simply plug in your instruments (or virtual instruments), and double-click on the `miti` program to get started. It will load up the default `.miti` file in the default text editor and start playing!
+
 ### Getting started playing music
 
-To get started, first plugin your instruments to your computer. Open a command prompt and type `miti` to see which instruments are available to you.
+To get started, first plugin your instruments to your computer. Open a command prompt and type `miti --list` to see which instruments are available to you.
 
 ```
-> miti
+> miti --list
 Available MIDI devices:
 - midi through port-0
 - nts-1 digital kit midi 1
