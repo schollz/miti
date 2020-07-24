@@ -17,6 +17,8 @@ import (
 	midi "github.com/schollz/miti/src/midi"
 )
 
+var Version string
+
 func Play(mitiFile string, justShowDevices bool) (err error) {
 	// show devices
 	devices, err := midi.Init()
@@ -43,7 +45,7 @@ func Play(mitiFile string, justShowDevices bool) (err error) {
 		_, erre := os.Stat(mitiFile)
 		if os.IsNotExist(erre) {
 			f, _ := os.Create(mitiFile)
-			f.WriteString(`# welcome to miti!
+			f.WriteString(`# welcome to miti (` + Version + `)!
 # this is your miti file: ` + mitiFile + ` (this file).
 # modify this file and save to update the sequencing on your instruments.
 # <- lines beginning with "#" are comments. feel free to delete them.
@@ -104,10 +106,11 @@ E B G E B G E B G E B G
 		if shutdownInitiated {
 			return
 		}
-		log.Infof("%2.5f [%s] emitting %+v", time.Since(startTime).Seconds(), s, c)
 		errMidi := midi.Midi(s, c)
 		if errMidi != nil {
 			log.Trace(errMidi)
+		} else {
+			log.Infof("%2.5f [%s] emitting %+v", time.Since(startTime).Seconds(), s, c)
 		}
 	})
 

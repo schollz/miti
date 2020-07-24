@@ -45,6 +45,7 @@ func main() {
 	if flagVersion {
 		return
 	}
+	play.Version = Version
 	var err error
 	if flagRecord != "" {
 		err = record.Record(flagRecord)
