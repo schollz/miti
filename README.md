@@ -19,9 +19,9 @@
 	* [Changing the legato](#changing-the-legato)
 	* [Sustain](#sustain)
 	* [Multiple instruments](#multiple-instruments)
+	* [Chord names](#chord-names)
 * [Other similar work](#other-similar-work)
 * [To Do](#to-do)
-	* [Won't do](#wont-do)
 * [License](#license)
 
 
@@ -52,6 +52,7 @@ Next install [Go](https://golang.org/dl/) and then in a terminal:
 
 That's it! `miti` is now available from the command-line.
 
+If you want to input [chord names](#chord-names) then you need to also [download and instal LilyPond](https://lilypond.org/download.html) on your system.
 
 ## Documentation
 
@@ -224,6 +225,30 @@ C E G
 
 will play the C, E, G arpeggio on both instruments 1 and 2.
 
+
+### Chord names
+
+_Note:_ Inputting chord names directly requires first [downloading and installing LilyPond](https://lilypond.org/download.html).
+
+To directly use chords, you can use the semicolon operator flanking the chord name. For instance, here are two C major chords followed by two A minor chords:
+
+```
+:C :C :Am :Am
+```
+
+If you want to alter the chord octave or add sustain, you do same as before but add another semicolon operator on the right side. In this example, the C major chord is held out for two beats and it starts on the 2nd octave:
+
+```
+:C:2- :C:2 :Am :Am
+```
+
+Chords can get pretty complex, and they should be understood. For example, you can add chord adjusters:
+
+```
+:Cm7/G
+```
+
+
 ## Other similar work
 
 - [textbeat](https://github.com/flipcoder/textbeat) is a text-based musical notation to do complex sequences using a columnated workflow.
@@ -250,10 +275,6 @@ will play the C, E, G arpeggio on both instruments 1 and 2.
 - [x] allow comments
 - [x] Find source of spurious jitter
 - [x] use portmidi scheduling to further eliminate jitter
-
-### Won't do
-
-- Use chords instead of notes. It turns out note clusters are more expressive in many cases. For example writing "Gmin/D" or "Gmin2inv" both take up more space than just writing "DGBb".
 
 
 ## License 

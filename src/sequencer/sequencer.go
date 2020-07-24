@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/metronome"
@@ -131,6 +132,11 @@ func (s *Sequencer) Emit(pulse int) {
 }
 
 func (s *Sequencer) Parse(fname string) (err error) {
+	startTime := time.Now()
+	defer func() {
+		log.Infof("parsed sequence '%s' in %s", fname, time.Since(startTime))
+	}()
+
 	b, err := ioutil.ReadFile(fname)
 	if err != nil {
 		return
