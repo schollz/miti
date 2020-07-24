@@ -203,7 +203,7 @@ func ChordToNotes(c string) (notes []Note, err error) {
 	}
 	defer os.Remove(tmpfile.Name()) // clean up
 
-	_, err = tmpfile.WriteString(`\version "2.20.0"
+	_, err = tmpfile.WriteString(`
 \score {
 \chordmode { ` + ChordToLilypond(c) + ` }
   \midi { }
