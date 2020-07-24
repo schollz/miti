@@ -1,5 +1,6 @@
 package main
 
+//go:generate git tag -af v$VERSION -m "v$VERSION"
 //go:generate go run .github/updateversion.go
 //go:generate git commit -am "bump $VERSION"
 //go:generate git tag -af v$VERSION -m "v$VERSION"
@@ -26,7 +27,7 @@ func init() {
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
 	if Version == "" {
-		Version = "v0.3.2-db63661"
+		Version = "v0.3.4-66cb94c"
 	}
 }
 
