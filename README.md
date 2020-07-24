@@ -1,5 +1,7 @@
 <img src="https://user-images.githubusercontent.com/6550035/87839388-7f2f4f80-c84f-11ea-8e12-75641fb6d386.png">
 
+<a href="https://github.com/schollz/miti/releases/latest"><img src="https://img.shields.io/badge/version-v0.3.2-brightgreen.svg?style=flat-square" alt="Version"></a>
+
 *miti* is a *musical instrument textual interface*. Basically, its MIDI, but textual.
 
 *miti* provides a program and musical notation that you can use to easily connect and control sounds in a very human way. It provides surprisingly simple sequencing for synthesizers or other instruments, namely control from  your favorite text editor.
