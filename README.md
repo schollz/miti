@@ -267,7 +267,7 @@ Chords can get pretty complex, and they should be understood. For example, you c
 - [Sonic Pi](https://sonic-pi.net/) is a SuperCollider live coding environment.
 - [Pure Data](https://puredata.info/) is a GUI program that enables music synthesis.
 - [Chuck](https://chuck.cs.princeton.edu/) is a music programming lanuage.
-
+- [melrose](https://github.com/emicklei/melrose) is a melody programming language.
 
 
 ## To Do
