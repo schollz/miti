@@ -91,8 +91,95 @@ startover:
 		}
 	}
 	fmt.Println(mitiChords)
+	//	determine melody based on chords
+	melody := make([]string, 64)
+	mi := 0
+	for i, chord := range chords {
+		// get random notes
+		beats := changes[i] * 4
+		numNotes := rrand.Intn(int(beats)/3) + int(beats/3)
+		notes := getRandomNotes(chords[0], chord, numNotes)
+		// get random subdivisions
+		log.Debugf("generate %d numbers that add up to %d", numNotes, beats)
+		subdivisions := generateNumbersThatAddTo(numNotes, beats)
+		for j, subdivision := range subdivisions {
+			for k := 0; k < subdivision; k++ {
+				melody[mi] = notes[j]
+				mi++
+			}
+		}
+	}
+	// print meldoy
+	mitiMelody := ""
+	for i, note := range melody {
+		if i%16 == 0 {
+			mitiMelody += "\n"
+		}
+		mitiMelody += note
+		if i < len(melody)-1 && note == melody[i+1] {
+			mitiMelody += "-"
+		}
+		mitiMelody += " "
+	}
+	fmt.Println(mitiMelody)
 
-	// determine melody based on chords
+	f, err := os.Create("miti.txt")
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
+	f.WriteString(`
+# generate1
+# seed ` + fmt.Sprint(seed) + `
+
+tempo 90
+
+pattern 1
+
+instruments sh-01a
+legato 90
+` + mitiChords + `
+
+instruments op-1
+legato 50
+` + mitiMelody + `
+`)
+	return
+}
+
+func getRandomNotes(key string, chord string, numNotes int) (notes []string) {
+	// get possible notes, weighted by importance
+	// important notes = notes in key, notes in chord, then notes in scale of chord
+	noteChanges := make(map[string]float64)
+	for _, note := range notesInScale(key) {
+		noteChanges[note] = 1
+	}
+	for _, note := range notesInScale(chord) {
+		if _, ok := noteChanges[note]; !ok {
+			noteChanges[note] = 0
+		}
+		noteChanges[note]++
+	}
+	for _, note := range notesInChords(chord) {
+		if _, ok := noteChanges[note]; !ok {
+			noteChanges[note] = 1
+		}
+		noteChanges[note]++
+	}
+	//  normalize note changes
+	total := 0.0
+	for note := range noteChanges {
+		total += noteChanges[note]
+	}
+	for note := range noteChanges {
+		noteChanges[note] = noteChanges[note] / total * 100
+	}
+
+	notes = make([]string, numNotes)
+	for i := 0; i < numNotes; i++ {
+		notes[i] = randomWeightedChoice(noteChanges)
+	}
 	return
 }
 
@@ -153,16 +240,23 @@ func randomWeightedChoice(m map[string]float64) string {
 }
 
 func generateNumbersThatAddTo(numNumbers int, addUpTo int) (nums []int) {
+	if numNumbers == 1 {
+		return []int{addUpTo}
+	}
 	var total int
 	nums = make([]int, numNumbers)
+	tries := 0
 	for {
 		total = 0
 		for i := range nums {
 			if total > addUpTo {
 				continue
 			}
-			// nums[i] = rand.Intn(12) + 1 // numbers must be in range [1,13]
-			nums[i] = int(math.Floor(rrand.NormFloat64()*float64(addUpTo)/10+float64(addUpTo)/4-1)) + 1
+			if tries > 5 {
+				nums[i] = rand.Intn(int(addUpTo/numNumbers+1)) + 1 // numbers must be in range [1,13]
+			} else {
+				nums[i] = int(math.Floor(rrand.NormFloat64()*float64(addUpTo)/10+float64(addUpTo)/4-1)) + 1
+			}
 			if nums[i] < 1 {
 				nums[i] = 1
 			}
@@ -171,6 +265,7 @@ func generateNumbersThatAddTo(numNumbers int, addUpTo int) (nums []int) {
 		if total == addUpTo {
 			break
 		}
+		tries++
 	}
 	return
 }
