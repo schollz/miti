@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"math"
 	"math/rand"
+	"sort"
+	"strings"
 	"time"
 
 	log "github.com/schollz/logger"
@@ -24,8 +26,24 @@ func run() (err error) {
 	if err != nil {
 		return
 	}
-	fmt.Println(randomWeightedChoice(chordChanges["C"]))
-	fmt.Println(generateNumbersThatAddTo16(4))
+	numChords := 4
+	changes := generateNumbersThatAddTo16(numChords)
+	chords := make([]string, numChords)
+startover:
+	chords[0] = "C"
+	chords[1] = ""
+	chords[2] = ""
+	chords[3] = ""
+	for i := 1; i < numChords; i++ {
+		chordString := strings.TrimSpace(strings.Join(chords, " "))
+		if _, ok := chordChanges[chordString]; !ok {
+			log.Debugf("could not find '%s'", chordString)
+			goto startover
+		}
+		chords[i] = randomWeightedChoice(chordChanges[chordString])
+	}
+	fmt.Println(chords)
+	fmt.Println(changes)
 	return
 }
 
@@ -41,17 +59,29 @@ func loadChords() (err error) {
 }
 
 func randomWeightedChoice(m map[string]float64) string {
+	type kv struct {
+		Key   string
+		Value float64
+	}
+	var ss []kv
+	for k, v := range m {
+		ss = append(ss, kv{k, v})
+	}
+
+	sort.Slice(ss, func(i, j int) bool {
+		return ss[i].Value > ss[j].Value
+	})
+
 	curSum := 0.0
 	target := rand.Float64() * 100
-	lastKey := ""
-	for key := range m {
-		curSum += m[key]
+	for _, kv := range ss {
+		curSum += kv.Value
 		if curSum >= target {
-			return key
+			return kv.Key
 		}
-		lastKey = key
 	}
-	return lastKey
+	panic("could not find key")
+	return ""
 }
 
 func generateNumbersThatAddTo16(numNumbers int) (nums []int) {
