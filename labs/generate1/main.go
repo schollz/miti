@@ -11,6 +11,8 @@ import (
 	"time"
 
 	log "github.com/schollz/logger"
+	"gopkg.in/music-theory.v0/chord"
+	"gopkg.in/music-theory.v0/scale"
 )
 
 func main() {
@@ -22,11 +24,24 @@ func main() {
 }
 
 func run() (err error) {
+	fmt.Println("chord")
+	s1 := chord.Of("A(add9)")
+	for _, note := range s1.Notes() {
+		fmt.Println(note.Class.String(s1.AdjSymbol))
+	}
+	fmt.Println("notes")
+	s := scale.Of("A(add9)")
+	for _, note := range s.Notes() {
+		fmt.Println(note.Class.String(s.AdjSymbol))
+	}
 	err = loadChords()
 	if err != nil {
 		return
 	}
+
+	// determine chords
 	numChords := 4
+	// chord changes add up to 16 beats
 	changes := generateNumbersThatAddTo16(numChords)
 	chords := make([]string, numChords)
 startover:
@@ -42,8 +57,25 @@ startover:
 		}
 		chords[i] = randomWeightedChoice(chordChanges[chordString])
 	}
-	fmt.Println(chords)
-	fmt.Println(changes)
+	mitiChords := ""
+	totalBeats := 0
+	for j, beats := range changes {
+		for i := 0; i < beats; i++ {
+			if totalBeats == 4 {
+				mitiChords += "\n"
+				totalBeats = 0
+			}
+			mitiChords += chords[j]
+			if i < beats-1 {
+				mitiChords += "-"
+			}
+			mitiChords += " "
+			totalBeats++
+		}
+	}
+	fmt.Println(mitiChords)
+
+	// determine melody based on chords
 	return
 }
 

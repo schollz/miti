@@ -10,4 +10,6 @@ require (
 	gitlab.com/gomidi/midi v1.17.2
 	gitlab.com/gomidi/rtmididrv v0.10.1
 	golang.org/x/sys v0.0.0-20200722175500-76b94024e4b6 // indirect
+	gopkg.in/music-theory.v0 v0.0.4
+	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
