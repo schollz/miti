@@ -48,7 +48,10 @@ func TestChordToNotes(t *testing.T) {
 	for _, tt := range tts {
 		notes, err := ChordToNotes(tt.chord)
 		assert.Nil(t, err)
-		assert.Equal(t, tt.notes, notes)
+		if err == nil {
+			fmt.Printf("notes: %+v", notes)
+			assert.Equal(t, tt.notes, notes)
+		}
 	}
 }
 
