@@ -1,6 +1,11 @@
 build:
 	go build -v
 
+clean:
+	rm go.mod 
+	rm go.sum 
+	go mod init 
+	go build -v
 
 release:
 	rm -f *.zip

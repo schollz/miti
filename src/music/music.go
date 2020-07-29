@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -229,7 +230,12 @@ func ChordToNotes(c string) (notes []Note, err error) {
 		return
 	}
 	log.Tracef("lilypond:\n%s", lilypondscript)
-	midiFileName := tmpfile.Name() + ".mid"
+	midiFileName := tmpfile.Name()
+	if runtime.GOOS == "windows" {
+		midiFileName += ".mid"
+	} else {
+		midiFileName += ".midi"
+	}
 
 	log.Tracef("writing midi file: '%s'", midiFileName)
 
