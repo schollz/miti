@@ -82,7 +82,7 @@ startover:
 				mitiChords += "\n"
 				totalBeats = 0
 			}
-			mitiChords += chords[j]
+			mitiChords += ":" + chords[j] + ":3"
 			if i < beats-1 {
 				mitiChords += "-"
 			}
@@ -94,10 +94,17 @@ startover:
 	//	determine melody based on chords
 	melody := make([]string, 64)
 	mi := 0
+	numNotes := 2
 	for i, chord := range chords {
 		// get random notes
 		beats := changes[i] * 4
-		numNotes := rrand.Intn(int(beats)/3) + int(beats/3)
+		if beats > 4 {
+			numNotes = 4
+		}
+		if beats > 8 {
+			numNotes = 8
+		}
+
 		notes := getRandomNotes(chords[0], chord, numNotes)
 		// get random subdivisions
 		log.Debugf("generate %d numbers that add up to %d", numNotes, beats)
@@ -115,7 +122,9 @@ startover:
 		if i%16 == 0 {
 			mitiMelody += "\n"
 		}
-		mitiMelody += note
+		mitiMelody += note + "5"
+		// if i == 0 || note != melody[i-1] {
+		// }
 		if i < len(melody)-1 && note == melody[i+1] {
 			mitiMelody += "-"
 		}
@@ -142,7 +151,7 @@ legato 90
 ` + mitiChords + `
 
 instruments op-1
-legato 50
+legato 90
 ` + mitiMelody + `
 `)
 	return

@@ -150,7 +150,7 @@ func (s *Sequencer) Parse(fname string) (err error) {
 	var part Part
 	for _, line := range strings.Split(data, "\n") {
 		line = strings.TrimSpace(line)
-		log.Debug(line)
+		log.Tracef("parsing %s", line)
 		if strings.HasPrefix(line, "pattern") {
 			if len(part.Instruments) > 0 {
 				section.Parts = append(section.Parts, part)
@@ -224,9 +224,11 @@ func (s *Sequencer) Parse(fname string) (err error) {
 				}
 				if strings.HasPrefix(cluster, ":") {
 					// interpret as a chord
+					log.Tracef("parsing '%s'", cluster)
 					cluster = strings.TrimPrefix(cluster, ":")
 					extra := strings.Split(cluster, ":")
 					var notes []music.Note
+					log.Tracef("converting chord '%s' to notes", extra[0])
 					notes, err = music.ChordToNotes(extra[0])
 					if err != nil {
 						return

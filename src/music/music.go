@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/kbinani/midi"
+	log "github.com/schollz/logger"
 )
 
 type Chord struct {
@@ -209,17 +210,17 @@ func ChordToNotes(c string) (notes []Note, err error) {
 		}
 	}()
 
-	tmpfile, err := ioutil.TempFile("", "lilypond")
+	tmpfile, err := ioutil.TempFile(".", "lilypond")
 	if err != nil {
 		return
 	}
 	defer os.Remove(tmpfile.Name()) // clean up
-
-	_, err = tmpfile.WriteString(`
+	lilypondscript := `
 \score {
 \chordmode { ` + ChordToLilypond(c) + ` }
   \midi { }
-}`)
+}`
+	_, err = tmpfile.WriteString(lilypondscript)
 	if err != nil {
 		return
 	}
@@ -227,6 +228,10 @@ func ChordToNotes(c string) (notes []Note, err error) {
 	if err != nil {
 		return
 	}
+	log.Tracef("lilypond:\n%s", lilypondscript)
+	midiFileName := tmpfile.Name() + ".mid"
+
+	log.Tracef("writing midi file: '%s'", midiFileName)
 
 	cmd := exec.Command("lilypond", "-o", tmpfile.Name(), tmpfile.Name())
 	output, err := cmd.CombinedOutput()
@@ -234,9 +239,9 @@ func ChordToNotes(c string) (notes []Note, err error) {
 		err = fmt.Errorf("lilypond error: %s\n\ndata: '%s'", err.Error(), output)
 		return
 	}
-	defer os.Remove(tmpfile.Name() + ".midi")
+	defer os.Remove(midiFileName)
 
-	f, err := os.Open(tmpfile.Name() + ".midi")
+	f, err := os.Open(midiFileName)
 	if err != nil {
 		return
 	}
@@ -258,6 +263,9 @@ func ChordToNotes(c string) (notes []Note, err error) {
 				notes = append(notes, MidiToNote(int(n.Messages[1])))
 			}
 		}
+	}
+	if len(notes) == 0 {
+		err = fmt.Errorf("no notes")
 	}
 	return
 }
