@@ -104,6 +104,12 @@ startover:
 		if beats > 8 {
 			numNotes = 8
 		}
+		if numNotes > beats {
+			numNotes = beats / 2
+		}
+		if numNotes <= 0 {
+			numNotes = 1
+		}
 
 		notes := getRandomNotes(chords[0], chord, numNotes)
 		// get random subdivisions
