@@ -1,6 +1,9 @@
 build:
 	go build -v
 
+buildwin:
+	go build -v -buildmode=exe
+
 clean:
 	rm go.mod 
 	rm go.sum 
