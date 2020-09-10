@@ -116,6 +116,7 @@ E B G E B G E B G E B G
 	})
 
 	// shutdown everything on Ctl+C
+	finished := make(chan bool)
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
@@ -130,6 +131,7 @@ E B G E B G E B G E B G
 			watcherDone <- true
 			time.Sleep(50 * time.Millisecond)
 			playDone <- true
+			finished <- true
 		}
 	}()
 
@@ -148,9 +150,6 @@ E B G E B G E B G E B G
 	}()
 
 	if SyncWithMidi {
-		// wait for midi intput to start
-		finished := make(chan bool)
-
 		events, errR := midi.ReadAll(finished)
 		if errR != nil {
 			err = errR
