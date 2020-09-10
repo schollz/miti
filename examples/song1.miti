@@ -1,6 +1,6 @@
 pattern a
 
-instruments wavetable
+instruments nts-1
 tempo 60
 
 legato 50

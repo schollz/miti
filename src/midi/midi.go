@@ -39,6 +39,7 @@ func Init() (devices []string, err error) {
 
 	outputChannelsMap = make(map[string]int)
 	outputChannelsMapMatch = make(map[string]int)
+	var wg sync.WaitGroup
 	for i := 0; i < portmidi.CountDevices(); i++ {
 		di := portmidi.Info(portmidi.DeviceID(i))
 		log.Debugf("device %d: '%s', i/o: %v/%v", i, di.Name, di.IsInputAvailable, di.IsOutputAvailable)
@@ -49,16 +50,19 @@ func Init() (devices []string, err error) {
 			outputChannelsMap[di.Name] = len(outputChannels)
 			outputChannels = append(outputChannels, make(chan music.Chord, 1000))
 			// create a go-routine for each instrument
+			wg.Add(1)
 			go func(instrument string, deviceID int, channelNum int) {
 				defer func() {
+					wg.Done()
 					if r := recover(); r != nil {
 						log.Debug("recovered panic")
 					}
 				}()
-				log.Debugf("[%s] opening stream", instrument)
+				log.Debugf("[%s] opening stream with latency %d", instrument, Latency)
 				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, Latency)
 				if err != nil {
-					panic(err)
+					log.Errorf("could not open '%s': %w", instrument, err)
+					return
 				}
 				log.Debugf("[%s] opened stream", instrument)
 				midis := make([]int64, 100)
@@ -125,6 +129,7 @@ func Init() (devices []string, err error) {
 			}
 		}
 	}
+	wg.Wait()
 
 	return
 }
