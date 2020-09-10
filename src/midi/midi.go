@@ -23,6 +23,8 @@ var outputChannels []chan music.Chord
 var channelLock sync.Mutex
 var inited bool
 
+var Latency = int64(2000) // milliseconds
+
 func Init() (devices []string, err error) {
 	defer func() {
 		if err == nil {
@@ -53,7 +55,7 @@ func Init() (devices []string, err error) {
 						log.Debug("recovered panic")
 					}
 				}()
-				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, 2000)
+				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, Latency)
 				if err != nil {
 					panic(err)
 				}

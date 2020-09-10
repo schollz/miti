@@ -10,12 +10,14 @@ import (
 	"fmt"
 
 	"github.com/schollz/miti/src/log"
+	"github.com/schollz/miti/src/midi"
 	"github.com/schollz/miti/src/play"
 	"github.com/schollz/miti/src/record"
 )
 
 var flagDebug, flagTrace, flagVersion, flagList bool
 var flagFile, flagRecord string
+var flagLatency int64
 
 // Version specifies the version
 var Version string
@@ -25,6 +27,7 @@ func init() {
 	flag.BoolVar(&flagTrace, "trace", false, "trace")
 	flag.BoolVar(&flagList, "list", false, "list midi devices")
 	flag.BoolVar(&flagVersion, "version", false, "show version")
+	flag.Int64Var(&flagLatency, "latency", 2000, "latency for midi output")
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
 	if Version == "" {
@@ -45,6 +48,7 @@ func main() {
 	if flagVersion {
 		return
 	}
+	midi.Latency = flagLatency
 	play.Version = Version
 	var err error
 	if flagRecord != "" {
