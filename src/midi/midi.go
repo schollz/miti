@@ -55,6 +55,7 @@ func Init() (devices []string, err error) {
 						log.Debug("recovered panic")
 					}
 				}()
+				log.Debugf("[%s] opening stream", instrument)
 				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, Latency)
 				if err != nil {
 					panic(err)

@@ -18,6 +18,7 @@ import (
 )
 
 var Version string
+var SyncWithMidi = false
 
 func Play(mitiFile string, justShowDevices bool) (err error) {
 	// show devices
@@ -146,9 +147,27 @@ E B G E B G E B G E B G
 		}
 	}()
 
+	if SyncWithMidi {
+		// wait for midi intput to start
+		finished := make(chan bool)
+
+		events, errR := midi.ReadAll(finished)
+		if errR != nil {
+			err = errR
+			return
+		}
+		for {
+			e := <-events
+			if !e.On {
+				break
+			}
+		}
+		finished <- true
+	}
 	log.Info("playing")
 	seq.Start()
 	<-playDone
+	log.Info("done playing")
 	return
 }
 

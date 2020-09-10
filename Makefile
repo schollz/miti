@@ -27,6 +27,8 @@ arm:
 	.github/uploadrelease.sh miti_linux_arm.zip
 
 win:
+	# $env:CGO_CFLAGS="-IC:\msys64\mingw64\include"
+	# $env:CGO_LDFLAGS="-LC:\msys64\mingw64\lib"
 	go build -v
 	cp C:\\msys64\\mingw64\\bin\\libportmidi.dll .
 	rm -f miti_windows.zip

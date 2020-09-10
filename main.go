@@ -15,7 +15,7 @@ import (
 	"github.com/schollz/miti/src/record"
 )
 
-var flagDebug, flagTrace, flagVersion, flagList bool
+var flagDebug, flagTrace, flagVersion, flagList, flagWait bool
 var flagFile, flagRecord string
 var flagLatency int64
 
@@ -27,6 +27,7 @@ func init() {
 	flag.BoolVar(&flagTrace, "trace", false, "trace")
 	flag.BoolVar(&flagList, "list", false, "list midi devices")
 	flag.BoolVar(&flagVersion, "version", false, "show version")
+	flag.BoolVar(&flagWait, "sync", false, "wait for midi input to start")
 	flag.Int64Var(&flagLatency, "latency", 2000, "latency for midi output")
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
@@ -50,6 +51,7 @@ func main() {
 	}
 	midi.Latency = flagLatency
 	play.Version = Version
+	play.SyncWithMidi = flagWait
 	var err error
 	if flagRecord != "" {
 		err = record.Record(flagRecord)

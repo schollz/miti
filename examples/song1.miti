@@ -1,7 +1,7 @@
 pattern a
 
-instruments nts-1
-tempo 240
+instruments wavetable
+tempo 60
 
-legato 1
+legato 50
 A4 A A A 
