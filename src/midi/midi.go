@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/music"
@@ -73,18 +74,20 @@ func Init() (devices []string, err error) {
 					// midi note -1 turns off all on notes
 					// midi note -2 turns off all on notes and shuts down
 					if chord.Notes[0].MIDI < 0 {
+						log.Debugf("chord.Notes[0].MIDI: %d", chord.Notes[0].MIDI)
 						// turn off all notes
 						channelLock.Lock()
+						for note := range notesOn {
+							if notesOn[note] {
+								log.Tracef("turning %+v off", note)
+								outputStream.WriteShort(0x80, note, 0)
+							}
+						}
 						if chord.Notes[0].MIDI == -2 {
 							// shutdown
 							// outputStream.Close()
 							channelLock.Unlock()
 							return
-						}
-						for note := range notesOn {
-							if notesOn[note] {
-								outputStream.WriteShort(0x80, note, 0)
-							}
 						}
 						channelLock.Unlock()
 					}
@@ -134,6 +137,7 @@ func Shutdown() (err error) {
 	for out := range outputChannels {
 		outputChannels[out] <- music.Chord{Notes: []music.Note{music.Note{MIDI: -2}}, On: false}
 	}
+	time.Sleep(500 * time.Millisecond)
 	return portmidi.Terminate()
 }
 
