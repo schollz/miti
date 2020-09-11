@@ -126,11 +126,11 @@ E B G E B G E B G E B G
 			shutdownInitiated = true
 			log.Debug(sig)
 			log.Info("shutting down")
+			watcherDone <- true
+			time.Sleep(50 * time.Millisecond)
 			go seq.Stop()
 			time.Sleep(50 * time.Millisecond)
 			midi.Shutdown()
-			time.Sleep(50 * time.Millisecond)
-			watcherDone <- true
 			time.Sleep(50 * time.Millisecond)
 			playDone <- true
 			finished <- true

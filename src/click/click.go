@@ -8,6 +8,7 @@ import (
 	"github.com/schollz/miti/src/log"
 )
 
+var TuneLatency = int64(100)
 var sampleNum = 0.0
 var pulseWidth = 2400.0  // microseconds
 var sampleRate = 44100.0 // hz
@@ -21,7 +22,9 @@ func SetBPM(bpm float64) {
 
 func Click(latency ...int64) {
 	go func() {
-		time.Sleep(100 * time.Millisecond)
+		if TuneLatency > 0 {
+			time.Sleep(time.Duration(TuneLatency) * time.Millisecond)
+		}
 		if len(latency) > 0 && latency[0] > 0 {
 			log.Tracef("activating click with latency %d", latency)
 			time.Sleep(time.Duration(latency[0]) * time.Millisecond)

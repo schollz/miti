@@ -75,16 +75,16 @@ func Init() (devices []string, err error) {
 					if chord.Notes[0].MIDI < 0 {
 						// turn off all notes
 						channelLock.Lock()
+						if chord.Notes[0].MIDI == -2 {
+							// shutdown
+							// outputStream.Close()
+							channelLock.Unlock()
+							return
+						}
 						for note := range notesOn {
 							if notesOn[note] {
 								outputStream.WriteShort(0x80, note, 0)
 							}
-						}
-						if chord.Notes[0].MIDI == -2 {
-							// shutdown
-							outputStream.Close()
-							channelLock.Unlock()
-							return
 						}
 						channelLock.Unlock()
 					}

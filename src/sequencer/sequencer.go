@@ -76,6 +76,9 @@ func (s *Sequencer) Start() {
 }
 
 func (s *Sequencer) Stop() {
+	if s.clickTrack {
+		click.Stop()
+	}
 	s.metronome.Stop()
 }
 

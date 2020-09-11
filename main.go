@@ -9,6 +9,7 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/schollz/miti/src/click"
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/midi"
 	"github.com/schollz/miti/src/play"
@@ -30,6 +31,7 @@ func init() {
 	flag.BoolVar(&flagWait, "sync", false, "wait for midi input to start")
 	flag.BoolVar(&flagClick, "click", false, "output click track with metronome")
 	flag.Int64Var(&flagLatency, "latency", 2000, "latency for midi output")
+	flag.Int64Var(&click.TuneLatency, "clicklag", 0, "add lag to click track to sync better")
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
 	if Version == "" {
