@@ -19,7 +19,10 @@ func SetBPM(bpm float64) {
 	periodTime = 60 / bpm
 }
 
-func Click() {
+func Click(latency ...int64) {
+	if len(latency) > 0 && latency[0] > 0 {
+		time.Sleep(time.Duration(latency[0]) * time.Millisecond)
+	}
 	activate = true
 }
 

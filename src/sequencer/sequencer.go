@@ -50,9 +50,9 @@ type Measure struct {
 	Chords []music.Chord
 }
 
-func New(midiPlay func(string, music.Chord)) (s *Sequencer) {
+func New(clickTrack bool, latency int64, midiPlay func(string, music.Chord)) (s *Sequencer) {
 	s = new(Sequencer)
-	s.metronome = metronome.New(s.Emit)
+	s.metronome = metronome.New(clickTrack, latency, s.Emit)
 	s.midiPlay = midiPlay
 	s.chainID = make(map[string]int)
 	return

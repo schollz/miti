@@ -19,6 +19,8 @@ import (
 
 var Version string
 var SyncWithMidi = false
+var ClickTrack = false
+var Latency = int64(0)
 
 func Play(mitiFile string, justShowDevices bool) (err error) {
 	// show devices
@@ -103,7 +105,7 @@ E B G E B G E B G E B G
 	shutdownInitiated := false
 
 	startTime := time.Now()
-	seq := sequencer.New(func(s string, c music.Chord) {
+	seq := sequencer.New(ClickTrack, Latency, func(s string, c music.Chord) {
 		if shutdownInitiated {
 			return
 		}
