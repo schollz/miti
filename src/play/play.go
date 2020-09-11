@@ -118,7 +118,7 @@ E B G E B G E B G E B G
 	})
 
 	// shutdown everything on Ctl+C
-	finished := make(chan bool)
+	finished := make(chan bool, 1)
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
