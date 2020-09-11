@@ -21,7 +21,8 @@ func Click() beep.Streamer {
 	return beep.StreamerFunc(func(samples [][2]float64) (n int, ok bool) {
 		for i := range samples {
 			sample := 0.0
-			if sampleNum < (sampleRate * pulseWidth / 1000000) {
+			window := (sampleRate * pulseWidth / 1000000)
+			if sampleNum < window {
 				sample = 1
 			}
 			samples[i][0] = sample
@@ -47,4 +48,8 @@ func Stop() {
 	log.Infof("closing click track")
 	speaker.Clear()
 	speaker.Close()
+}
+
+func Reset() {
+	sampleNum = (sampleRate * pulseWidth / 1000000)
 }
