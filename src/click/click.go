@@ -10,7 +10,7 @@ import (
 
 var TuneLatency = int64(100)
 var sampleNum = 0.0
-var pulseWidth = 2400.0  // microseconds
+var pulseWidth = 4800.0  // microseconds
 var sampleRate = 44100.0 // hz
 var periodTime = 1.0     // seconds
 var activated = false
