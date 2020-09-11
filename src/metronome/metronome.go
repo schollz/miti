@@ -11,28 +11,23 @@ const QUARTER_NOTES_PER_MEASURE = 4.0
 
 type Metronome struct {
 	quarterNotePerMeasure float64
-	tempo                 int
+	tempo                 float64
 	pulse                 float64
 	sections              []float64
 	update                chan bool
 	stop                  chan bool
 	on                    bool
 	stepemit              func(int)
-	clickTrack            bool
 }
 
-func New(clickTrack bool, stepemit func(int)) (m *Metronome) {
+func New(stepemit func(int)) (m *Metronome) {
 	m = new(Metronome)
-	m.tempo = 60
+	m.tempo = 60.0
 	m.quarterNotePerMeasure = 4
 	m.sections = []float64{4}
 	m.update = make(chan bool)
 	m.stop = make(chan bool)
 	m.stepemit = stepemit
-	m.clickTrack = clickTrack
-	if m.clickTrack {
-		click.Play(m.tempo)
-	}
 	return
 }
 
@@ -55,9 +50,6 @@ func (m *Metronome) Start() {
 				if m.pulse == PULSES_PER_QUARTER_NOTE*QUARTER_NOTES_PER_MEASURE {
 					m.pulse = 0
 				}
-				if m.clickTrack && m.pulse%PULSES_PER_QUARTER_NOTE == 0 {
-					go click.Click(latency)
-				}
 				go m.stepemit(int(m.pulse))
 			case <-m.update:
 				log.Trace("got metronome update")
@@ -79,15 +71,12 @@ func (m *Metronome) Stop() {
 	m.stop <- true
 }
 
-func (m *Metronome) UpdateTempo(tempo int) {
+func (m *Metronome) UpdateTempo(tempo float64) {
 	if tempo <= 0 || tempo == m.tempo {
 		return
 	}
 	log.Tracef("setting tempo to %d", tempo)
 	m.tempo = tempo
-	if m.clickTrack {
-		click.BPM(m.tempo)
-	}
 	if m.on {
 		m.update <- true
 	}

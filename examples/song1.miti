@@ -1,7 +1,7 @@
 pattern a
 
-instruments nts-1
-tempo 60
+instruments microsoft
+tempo 120
 
-legato 50
+legato 95
 A4 A A A 

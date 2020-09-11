@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/schollz/miti/src/click"
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/metronome"
 	"github.com/schollz/miti/src/music"
@@ -26,6 +27,8 @@ type Sequencer struct {
 
 	measure, section int
 	midiPlay         func(string, music.Chord)
+	latency          int64
+	clickTrack       bool
 	sync.Mutex
 }
 
@@ -33,7 +36,7 @@ type Section struct {
 	Name        string
 	Parts       []Part
 	NumMeasures int
-	Tempo       int
+	Tempo       float64
 }
 
 // Part contains the list of instruments and their measures
@@ -52,8 +55,10 @@ type Measure struct {
 
 func New(clickTrack bool, latency int64, midiPlay func(string, music.Chord)) (s *Sequencer) {
 	s = new(Sequencer)
-	s.metronome = metronome.New(clickTrack, latency, s.Emit)
+	s.metronome = metronome.New(s.Emit)
 	s.midiPlay = midiPlay
+	s.latency = latency
+	s.clickTrack = clickTrack
 	s.chainID = make(map[string]int)
 	return
 }
@@ -61,6 +66,9 @@ func New(clickTrack bool, latency int64, midiPlay func(string, music.Chord)) (s 
 func (s *Sequencer) Start() {
 	s.measure = -1
 	s.section = 0
+	if s.clickTrack {
+		click.Play(60)
+	}
 	if len(s.Sections) > 0 {
 		s.UpdateTempo(s.Sections[s.chainID[s.chain[s.section]]].Tempo)
 	}
@@ -71,8 +79,11 @@ func (s *Sequencer) Stop() {
 	s.metronome.Stop()
 }
 
-func (s *Sequencer) UpdateTempo(tempo int) {
+func (s *Sequencer) UpdateTempo(tempo float64) {
 	s.metronome.UpdateTempo(tempo)
+	if s.clickTrack {
+		click.SetBPM(tempo)
+	}
 }
 
 func (s *Sequencer) Emit(pulse int) {
@@ -96,6 +107,10 @@ func (s *Sequencer) Emit(pulse int) {
 			}
 		}
 		log.Trace(s.section, s.measure, pulse)
+	}
+	if s.clickTrack && math.Mod(float64(pulse), metronome.PULSES_PER_QUARTER_NOTE) == 0 {
+		log.Trace("should click!")
+		click.Click(s.latency)
 	}
 
 	// check for notes to emit
@@ -193,7 +208,7 @@ func (s *Sequencer) Parse(fname string) (err error) {
 		} else if strings.HasPrefix(line, "tempo") {
 			fs := strings.Fields(line)
 			if len(fs) > 0 {
-				section.Tempo, err = strconv.Atoi(fs[1])
+				section.Tempo, err = strconv.ParseFloat(fs[1], 64)
 				if err != nil {
 					err = fmt.Errorf("problem parsing tempo: %s", fs[1])
 					return

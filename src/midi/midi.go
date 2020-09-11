@@ -56,7 +56,7 @@ func Init() (devices []string, err error) {
 					}
 				}()
 				log.Debugf("[%s] opening stream with latency %d", instrument, Latency)
-				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, Latency)
+				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 1024, Latency)
 				if err != nil {
 					panic(err)
 				}
