@@ -1,7 +1,10 @@
 pattern a
 
-instruments microsoft
+instruments through
 tempo 120
 
 legato 95
-A4 A A A 
+A4 
+.
+B
+.

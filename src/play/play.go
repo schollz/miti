@@ -113,7 +113,8 @@ E B G E B G E B G E B G
 		if errMidi != nil {
 			log.Trace(errMidi)
 		} else {
-			log.Infof("%2.5f [%s] emitting %+v", time.Since(startTime).Seconds(), s, c)
+			log.Infof("%2.5f [%s] emitting %+v on=%v", time.Since(startTime).Seconds(), s, c, c.On)
+
 		}
 	})
 
