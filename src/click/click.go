@@ -9,7 +9,7 @@ import (
 )
 
 var sampleNum = 0.0
-var pulseWidth = 200.0   // microseconds
+var pulseWidth = 2400.0  // microseconds
 var sampleRate = 44100.0 // hz
 var periodTime = 1.0     // seconds
 
