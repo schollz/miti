@@ -12,6 +12,8 @@ var sampleNum = 0.0
 var pulseWidth = 2400.0  // microseconds
 var sampleRate = 44100.0 // hz
 var periodTime = 1.0     // seconds
+var activate = false
+var activated = false
 
 func SetBPM(bpm float64) {
 	periodTime = 60 / bpm
@@ -20,9 +22,14 @@ func SetBPM(bpm float64) {
 func Click() beep.Streamer {
 	return beep.StreamerFunc(func(samples [][2]float64) (n int, ok bool) {
 		for i := range samples {
+			if activate {
+				activate = false
+				activated = true
+				sampleNum = 0
+			}
 			sample := 0.0
 			window := (sampleRate * pulseWidth / 1000000)
-			if sampleNum < window {
+			if sampleNum < window && activated {
 				sample = 1
 			}
 			samples[i][0] = sample
@@ -30,6 +37,7 @@ func Click() beep.Streamer {
 			sampleNum++
 			if sampleNum > sampleRate*periodTime {
 				sampleNum = 0
+				activated = false
 			}
 		}
 		return len(samples), true
