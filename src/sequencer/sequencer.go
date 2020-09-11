@@ -111,7 +111,7 @@ func (s *Sequencer) Emit(pulse int) {
 		}
 		log.Trace(s.section, s.measure, pulse)
 	}
-	if s.clickTrack && math.Mod(float64(pulse), metronome.PULSES_PER_QUARTER_NOTE) == 0 {
+	if s.clickTrack && math.Mod(float64(pulse), metronome.PULSES_PER_QUARTER_NOTE/2) == 0 {
 		log.Trace("should click!")
 		click.Click(s.latency)
 	}
