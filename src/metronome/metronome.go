@@ -11,7 +11,7 @@ const QUARTER_NOTES_PER_MEASURE = 4.0
 
 type Metronome struct {
 	quarterNotePerMeasure float64
-	tempo                 int
+	tempo                 float64
 	pulse                 float64
 	sections              []float64
 	update                chan bool
@@ -22,7 +22,7 @@ type Metronome struct {
 
 func New(stepemit func(int)) (m *Metronome) {
 	m = new(Metronome)
-	m.tempo = 60
+	m.tempo = 60.0
 	m.quarterNotePerMeasure = 4
 	m.sections = []float64{4}
 	m.update = make(chan bool)
@@ -71,7 +71,7 @@ func (m *Metronome) Stop() {
 	m.stop <- true
 }
 
-func (m *Metronome) UpdateTempo(tempo int) {
+func (m *Metronome) UpdateTempo(tempo float64) {
 	if tempo <= 0 || tempo == m.tempo {
 		return
 	}

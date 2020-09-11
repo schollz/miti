@@ -19,6 +19,8 @@ import (
 
 var Version string
 var SyncWithMidi = false
+var ClickTrack = false
+var Latency = int64(0)
 
 func Play(mitiFile string, justShowDevices bool) (err error) {
 	// show devices
@@ -103,7 +105,7 @@ E B G E B G E B G E B G
 	shutdownInitiated := false
 
 	startTime := time.Now()
-	seq := sequencer.New(func(s string, c music.Chord) {
+	seq := sequencer.New(ClickTrack, Latency, func(s string, c music.Chord) {
 		if shutdownInitiated {
 			return
 		}
@@ -116,7 +118,7 @@ E B G E B G E B G E B G
 	})
 
 	// shutdown everything on Ctl+C
-	finished := make(chan bool)
+	finished := make(chan bool, 1)
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
@@ -124,11 +126,11 @@ E B G E B G E B G E B G
 			shutdownInitiated = true
 			log.Debug(sig)
 			log.Info("shutting down")
+			watcherDone <- true
+			time.Sleep(50 * time.Millisecond)
 			go seq.Stop()
 			time.Sleep(50 * time.Millisecond)
 			midi.Shutdown()
-			time.Sleep(50 * time.Millisecond)
-			watcherDone <- true
 			time.Sleep(50 * time.Millisecond)
 			playDone <- true
 			finished <- true

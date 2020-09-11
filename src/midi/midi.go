@@ -56,7 +56,7 @@ func Init() (devices []string, err error) {
 					}
 				}()
 				log.Debugf("[%s] opening stream with latency %d", instrument, Latency)
-				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 4096, Latency)
+				outputStream, err := portmidi.NewOutputStream(portmidi.DeviceID(deviceID), 1024, Latency)
 				if err != nil {
 					panic(err)
 				}
@@ -75,16 +75,16 @@ func Init() (devices []string, err error) {
 					if chord.Notes[0].MIDI < 0 {
 						// turn off all notes
 						channelLock.Lock()
+						if chord.Notes[0].MIDI == -2 {
+							// shutdown
+							// outputStream.Close()
+							channelLock.Unlock()
+							return
+						}
 						for note := range notesOn {
 							if notesOn[note] {
 								outputStream.WriteShort(0x80, note, 0)
 							}
-						}
-						if chord.Notes[0].MIDI == -2 {
-							// shutdown
-							outputStream.Close()
-							channelLock.Unlock()
-							return
 						}
 						channelLock.Unlock()
 					}
