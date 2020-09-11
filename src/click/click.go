@@ -19,7 +19,11 @@ func SetBPM(bpm float64) {
 	periodTime = 60 / bpm
 }
 
-func Click() beep.Streamer {
+func Click() {
+	activate = true
+}
+
+func click() beep.Streamer {
 	return beep.StreamerFunc(func(samples [][2]float64) (n int, ok bool) {
 		for i := range samples {
 			if activate {
@@ -46,10 +50,10 @@ func Click() beep.Streamer {
 
 func Play(bpm float64) {
 	sr := beep.SampleRate(int(sampleRate))
-	speaker.Init(sr, sr.N(time.Second/10))
+	speaker.Init(sr, sr.N(time.Second/200))
 	log.Infof("starting click track at %f", bpm)
 	SetBPM(bpm)
-	speaker.Play(Click())
+	speaker.Play(click())
 }
 
 func Stop() {
