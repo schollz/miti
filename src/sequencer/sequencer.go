@@ -65,12 +65,9 @@ func New(clickTrack bool, latency int64, midiPlay func(string, music.Chord)) (s 
 
 func (s *Sequencer) Start() {
 	s.measure = -1
-	s.section = 0
+	s.section = -1
 	if s.clickTrack {
 		click.Play(60)
-	}
-	if len(s.Sections) > 0 {
-		s.UpdateTempo(s.Sections[s.chainID[s.chain[s.section]]].Tempo)
 	}
 	s.metronome.Start()
 }
@@ -96,9 +93,9 @@ func (s *Sequencer) Emit(pulse int) {
 		return
 	}
 
-	if pulse == 0 {
+	if pulse == 0 || s.section < 0 {
 		s.measure++
-		if s.measure == s.Sections[s.sectionID].NumMeasures {
+		if s.measure == s.Sections[s.sectionID].NumMeasures || s.section < 0 {
 			s.section++
 			s.section = s.section % len(s.chain)
 			s.sectionID = s.chainID[s.chain[s.section]]
@@ -207,6 +204,7 @@ func (s *Sequencer) Parse(fname string) (err error) {
 			fs := strings.Fields(line)
 			if len(fs) > 1 {
 				newChain = fs[1:]
+				log.Debugf("newChain: %+v", newChain)
 			}
 		} else if strings.HasPrefix(line, "tempo") {
 			fs := strings.Fields(line)

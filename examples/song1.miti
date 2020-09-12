@@ -1,7 +1,17 @@
+chain a b
+
 pattern a
 
 instruments through
-tempo 240
+tempo 120
 
 legato 95
 C D E F
+
+pattern b
+
+instruments through
+tempo 120
+
+legato 95
+G A B C

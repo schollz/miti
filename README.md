@@ -181,7 +181,7 @@ If you have multiple patterns you can chain them together in any order using `ch
 ```
 chain a b b b b b
 
-pattern 1
+pattern a
 CEG
 
 pattern b 
