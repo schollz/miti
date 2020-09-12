@@ -14,11 +14,13 @@ import (
 	"github.com/schollz/miti/src/midi"
 	"github.com/schollz/miti/src/play"
 	"github.com/schollz/miti/src/record"
+	"github.com/schollz/miti/src/sequencer"
 )
 
 var flagDebug, flagTrace, flagVersion, flagList, flagWait, flagClick bool
 var flagFile, flagRecord string
 var flagLatency int64
+var flagClickPerQuarter float64
 
 // Version specifies the version
 var Version string
@@ -32,6 +34,7 @@ func init() {
 	flag.BoolVar(&flagClick, "click", false, "output click track with metronome")
 	flag.Int64Var(&flagLatency, "latency", 2000, "latency for midi output")
 	flag.Int64Var(&click.TuneLatency, "clicklag", 0, "add lag to click track to sync better")
+	flag.Float64Var(&sequencer.ClickPerQuarterNote, "clickperqn", 2, "number of clicks per quarter note")
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
 	if Version == "" {

@@ -17,6 +17,8 @@ import (
 
 const QUARTERNOTES_PER_MEASURE = 4
 
+var ClickPerQuarterNote = 2.0
+
 type Sequencer struct {
 	metronome *metronome.Metronome
 	Sections  []Section
@@ -108,7 +110,7 @@ func (s *Sequencer) Emit(pulse int) {
 		}
 		log.Trace(s.section, s.measure, pulse)
 	}
-	if s.clickTrack && math.Mod(float64(pulse), metronome.PULSES_PER_QUARTER_NOTE/2) == 0 {
+	if s.clickTrack && math.Mod(float64(pulse), metronome.PULSES_PER_QUARTER_NOTE/ClickPerQuarterNote) == 0 {
 		log.Trace("should click!")
 		click.Click(s.latency)
 	}
