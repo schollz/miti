@@ -1,6 +1,6 @@
 <img src="https://user-images.githubusercontent.com/6550035/87839388-7f2f4f80-c84f-11ea-8e12-75641fb6d386.png">
 
-<a href="https://github.com/schollz/miti/releases/latest"><img src="https://img.shields.io/badge/version-v0.4.1-brightgreen.svg?style=flat-square" alt="Version"></a>
+<a href="https://github.com/schollz/miti/releases/latest"><img src="https://img.shields.io/badge/version-v-brightgreen.svg?style=flat-square" alt="Version"></a>
 
 *miti* is a *musical instrument textual interface*. Basically, its MIDI, but textual.
 
@@ -22,6 +22,7 @@
 	* [Sustain](#sustain)
 	* [Multiple instruments](#multiple-instruments)
 	* [Chord names](#chord-names)
+	* [Click track](#click-track)
 * [Other similar work](#other-similar-work)
 * [To Do](#to-do)
 * [License](#license)
@@ -257,6 +258,9 @@ Chords can get pretty complex, and they should be understood. For example, you c
 :Cm7/G
 ```
 
+## Click track
+
+It's useful to get a click track going to be used to sync audio equip. *miti* will output a click track on the default audio using the `--click` track and can be lagged (if needed) by setting `--clicklag`.
 
 ## Other similar work
 
