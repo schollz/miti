@@ -8,8 +8,10 @@ import (
 
 	"github.com/eiannone/keyboard"
 	"github.com/schollz/miti/src/log"
-	"github.com/schollz/miti/src/midi"
+
 	"github.com/schollz/miti/src/music"
+	midi "github.com/schollz/miti/src/rtmidi" // use rtmidi instead
+	//	midi "github.com/schollz/miti/src/midi"
 )
 
 func Record(fname string) (err error) {

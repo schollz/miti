@@ -158,6 +158,7 @@ E B G E B G E B G E B G
 			err = errR
 			return
 		}
+		fmt.Println("waiting for keypress to initiate")
 		for {
 			e := <-events
 			if !e.On {
