@@ -32,7 +32,7 @@ func init() {
 	flag.BoolVar(&flagVersion, "version", false, "show version")
 	flag.BoolVar(&flagWait, "sync", false, "wait for midi input to start")
 	flag.BoolVar(&flagClick, "click", false, "output click track with metronome")
-	flag.Int64Var(&flagLatency, "latency", 2000, "latency for midi output")
+	flag.Int64Var(&flagLatency, "latency", 10, "latency for midi output")
 	flag.Int64Var(&click.TuneLatency, "clicklag", 0, "add lag to click track to sync better")
 	flag.Float64Var(&sequencer.ClickPerQuarterNote, "clickperqn", 2, "number of clicks per quarter note")
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
