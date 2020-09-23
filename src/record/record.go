@@ -35,7 +35,7 @@ func Record(fname string) (err error) {
 	currentState := ""
 	previousNote := music.NewNote("C", 4)
 	go func() {
-		ticker := time.NewTicker(500 * time.Millisecond)
+		ticker := time.NewTicker(400 * time.Millisecond)
 		notes := []midi.Event{}
 		for {
 			select {
@@ -63,12 +63,12 @@ func Record(fname string) (err error) {
 				for _, e := range notes {
 					log.Debugf("e: %+v", e)
 					note := music.MidiToNote(e.MIDI)
-					closestNote := music.ClosestNote(note.Name, previousNote)
-					if closestNote.Octave == note.Octave {
-						currentState += fmt.Sprintf("%s", note.Name)
-					} else {
-						currentState += fmt.Sprintf("%s%d", note.Name, note.Octave)
-					}
+					// closestNote := music.ClosestNote(note.Name, previousNote)
+					// if closestNote.Octave == note.Octave {
+					// 	currentState += fmt.Sprintf("%s", note.Name)
+					// } else {
+					currentState += fmt.Sprintf("%s%d", note.Name, note.Octave)
+					// }
 					previousNote = note
 				}
 				currentState += " "

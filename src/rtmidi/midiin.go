@@ -40,7 +40,7 @@ func ReadAll(finished chan bool) (events chan Event, err error) {
 			log.Tracef("setting up %s", name)
 			ins[j].SetListener(func(data []byte, deltaMicroseconds int64) {
 				if len(data) == 3 {
-					log.Tracef("[%s] %d %+v", name, data)
+					log.Tracef("[%s] %+v", name, data)
 					events <- Event{int(data[1]), data[0] == 144, name, time.Now()}
 				}
 			})
