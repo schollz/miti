@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/schollz/miti/src/log"
 	"github.com/schollz/miti/src/music"
@@ -48,6 +47,7 @@ func Init() (devices []string, err error) {
 
 	outputChannelsMap = make(map[string]int)
 	outputChannelsMapMatch = make(map[string]int)
+	var wg sync.WaitGroup
 	for _, out := range outs {
 		log.Debugf("device: %s", out.String())
 		devices = append(devices, out.String())
@@ -55,12 +55,14 @@ func Init() (devices []string, err error) {
 		outputChannelsMap[out.String()] = len(outputChannels)
 		outputChannels = append(outputChannels, make(chan music.Chord, 1000))
 		// create a go-routine for each instrument
+		wg.Add(1)
 		go func(instrument string, channelNum int, midio midi.Out) {
 			log.Debugf("[%s] opening stream", instrument)
 			err := midio.Open()
 			if err != nil {
 				panic(err)
 			}
+			wg.Done()
 			log.Debugf("[%s] making writer", instrument)
 			wr := writer.New(midio)
 			log.Debugf("[%s] opened stream", instrument)
@@ -78,6 +80,7 @@ func Init() (devices []string, err error) {
 					channelLock.Lock()
 					for note := range notesOn {
 						if notesOn[note] {
+							log.Tracef("turning %+v off", note)
 							writer.NoteOff(wr, uint8(note))
 						}
 					}
@@ -85,10 +88,10 @@ func Init() (devices []string, err error) {
 						// shutdown
 						midio.Close()
 						channelLock.Unlock()
-						go func() {
-							time.Sleep(50 * time.Millisecond)
-							drv.Close()
-						}()
+						// go func() {
+						// 	time.Sleep(50 * time.Millisecond)
+						// 	drv.Close()
+						// }()
 						return
 					}
 					channelLock.Unlock()
@@ -113,8 +116,7 @@ func Init() (devices []string, err error) {
 			}
 		}(out.String(), len(outputChannels)-1, out)
 	}
-	time.Sleep(3 * time.Second)
-
+	wg.Wait()
 	return
 }
 
