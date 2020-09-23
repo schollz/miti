@@ -13,8 +13,8 @@ import (
 	"github.com/schollz/miti/src/sequencer"
 	"github.com/skratchdot/open-golang/open"
 
-	// midi "github.com/schollz/miti/src/rtmidi" // use rtmidi instead
-	midi "github.com/schollz/miti/src/midi"
+	midi "github.com/schollz/miti/src/rtmidi" // use rtmidi instead
+	//	midi "github.com/schollz/miti/src/midi"
 )
 
 var Version string
