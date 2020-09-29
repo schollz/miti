@@ -6,11 +6,13 @@ import (
 	"math"
 	"os"
 	"os/exec"
+	"path"
 	"runtime"
 	"strconv"
 	"strings"
 
 	"github.com/kbinani/midi"
+	"github.com/schollz/jsonstore"
 	log "github.com/schollz/logger"
 )
 
@@ -201,6 +203,26 @@ func MidiToNote(midi int) Note {
 
 // ChordToNotes converts chords to notes using lilypond
 func ChordToNotes(c string) (notes []Note, err error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return
+	}
+	chordDir := path.Join(homeDir, ".cache", "miti")
+	chordFile := path.Join(chordDir, "chords.json")
+	log.Tracef("chordFile: %s", chordFile)
+	ks, err := jsonstore.Open(chordFile)
+	if err != nil {
+		err = os.MkdirAll(chordDir, os.ModePerm)
+		if err != nil {
+			return
+		}
+		ks = new(jsonstore.JSONStore)
+	}
+	err = ks.Get(c, &notes)
+	if err == nil {
+		return
+	}
+
 	if _, ok := chordToNotesCache[c]; ok {
 		notes = chordToNotesCache[c]
 		return
@@ -272,6 +294,9 @@ func ChordToNotes(c string) (notes []Note, err error) {
 	}
 	if len(notes) == 0 {
 		err = fmt.Errorf("no notes")
+	} else {
+		ks.Set(c, &notes)
+		err = jsonstore.Save(ks, chordFile)
 	}
 	return
 }
