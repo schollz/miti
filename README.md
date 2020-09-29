@@ -56,7 +56,7 @@ Next install [Go](https://golang.org/dl/) and then in a terminal:
 
 	> go install github.com/schollz/miti
 
-_Optional:_ If you want to input [chord names](#chord-names) then you need to also [download and instal LilyPond](https://lilypond.org/download.html) on your system.
+_Optional:_ If you want to input [chord names](#chord-names) then you need to also [download and instal LilyPond](https://lilypond.org/download.html) on your system. ([Here are instructions](http://partitura.org/index.php/lilypond/) for installing on a Raspberry Pi).
 
 That's it! `miti` is now available from the command-line.
 
