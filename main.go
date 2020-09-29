@@ -38,7 +38,7 @@ func init() {
 	flag.StringVar(&flagRecord, "record", "", "record input to miti file")
 	flag.StringVar(&flagFile, "play", "", "play sequence from miti file")
 	if Version == "" {
-		Version = "v0.5.4-7396b03"
+		Version = "v0.6.0-5001293"
 	}
 }
 

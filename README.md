@@ -1,6 +1,6 @@
 <img src="https://user-images.githubusercontent.com/6550035/87839388-7f2f4f80-c84f-11ea-8e12-75641fb6d386.png">
 
-<a href="https://github.com/schollz/miti/releases/latest"><img src="https://img.shields.io/badge/version-v0.5.4-brightgreen.svg?style=flat-square" alt="Version"></a>
+<a href="https://github.com/schollz/miti/releases/latest"><img src="https://img.shields.io/badge/version-v0.6.0-brightgreen.svg?style=flat-square" alt="Version"></a>
 
 *miti* is a *musical instrument textual interface*. Basically, its MIDI, but textual.
 
