@@ -29,10 +29,9 @@ arm:
 	zip miti_linux_arm.zip miti README.md LICENSE 
 	.github/uploadrelease.sh miti_linux_arm.zip
 
-win:
-	# $env:CGO_CFLAGS="-IC:\msys64\mingw64\include"
-	# $env:CGO_LDFLAGS="-LC:\msys64\mingw64\lib"
-	go build -v
+# $env:CGO_CFLAGS="-IC:\msys64\mingw64\include"
+# $env:CGO_LDFLAGS="-LC:\msys64\mingw64\lib"
+win: buildwin
 	cp C:\\msys64\\mingw64\\bin\\libportmidi.dll .
 	rm -f miti_windows.zip
 	zip miti_windows.zip miti.exe README.md LICENSE libportmidi.dll
